@@ -1,12 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+			crossorigin="anonymous"
+		/>
+		<script
+			src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+			integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+			integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+			crossorigin="anonymous"
+		></script>
+	</head>
+	<body>
+		<div class="container">
+			<br />
+			<h1>Visualizing Line Segment Intersection Algorithms</h1>
+
+			<hr />
+			<!-- Content here -->
+			<nav>
+				<div class="nav nav-pills" id="nav-tab" role="tablist">
+					<button
+						class="nav-link active"
+						id="nav-home-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#nav-home"
+						type="button"
+						role="tab"
+						aria-controls="nav-home"
+						aria-selected="true"
+					>
+						Summary
+					</button>
+					<button
+						class="nav-link"
+						id="nav-profile-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#nav-profile"
+						type="button"
+						role="tab"
+						aria-controls="nav-profile"
+						aria-selected="false"
+					>
+						Timeline
+					</button>
+					<button
+						class="nav-link"
+						id="nav-references-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#nav-references-content"
+						type="button"
+						role="tab"
+						aria-controls="nav-references-content"
+						aria-selected="false"
+					>
+						References
+					</button>
+					<button
+						class="nav-link"
+						id="nav-description-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#nav-description-content"
+						type="button"
+						role="tab"
+						aria-controls="nav-description-content"
+						aria-selected="false"
+					>
+						Description
+					</button>
+				</div>
+			</nav>
+
+			<div class="tab-content" id="nav-tabContent">
+				<div
+					class="tab-pane fade show active"
+					id="nav-home"
+					role="tabpanel"
+					aria-labelledby="nav-home-tab"
+				>
+					<hr />
+					<br />
+					<h2 id="8adf7062-0b73-43c6-9879-f8451af4b085" class="">
+						Team Members
+					</h2>
+					<p id="2e74c48b-d585-4c86-a4d3-c265a6db0e1b" class="">
+						The project is simple enough for one person. I would be woking on
+						this project alone.
+					</p>
+					<p id="9ffd96cf-86d6-42db-9698-556f62cd0fbe" class="">
+						Details of the group member(s):
+					</p>
+					<ul id="379830a0-0299-49ea-b964-d88788ccbcb0" class="bulleted-list">
+						<li>Dhrushit Raval - dr9703</li>
+					</ul>
+					<br />
+					<h2 id="7111f297-832a-4ee9-87fb-1ad64fac0e8a" class="">
+						Problem Description
+					</h2>
+					<p id="a1e3b6a9-5f95-4d52-b10e-cdadf9901cc0" class="">
+						One of the very basic problems in computational geometry, is finding
+						intersection of two lines segments. In this project, I intend to
+						build a tool that would help visualize the algorithm that is used to
+						find the intersection in hopes to make it easy to understand. The
+						algorithm used is a simple line sweep algorithm.
+					</p>
+					<p id="f0d34709-a57b-4676-a1f1-6879aaa0f1af" class="">
+						In this project, I will implement the line sweep algorithm as well
+						as a brute algorithm for finding intersections for n line segments.
+						Implementing both would allow user to compare and understand how
+						things work. Further details about how this algorithm works is
+						provided in the algorithm description tab, and a visualization, will
+						soon be provided in the visualization tab.
+					</p>
+				</div>
+				<div
+					class="tab-pane fade"
+					id="nav-profile"
+					role="tabpanel"
+					aria-labelledby="nav-profile-tab"
+				>
+					<div class="tab-pane fade show active" aria-labelledby="home-tab">
+						<hr />
+						<br />
+						<h2>Project Timeline</h2>
+						<br />
+						<p>
+							As per the deadlines set by the university, the final submission
+							will be done in week 11. Currently, this is week 4. And as I start
+							building up the tools, I would have 6 weeks to complete the
+							project. Following timeline is what I estimate would be followed
+							in this project, in order to complete things on time:
+						</p>
+						<br />
+						<h4>Week 5:</h4>
+						<ul class="bulleted-list">
+							<li>Iterate over the algorithm details</li>
+						</ul>
+						<ul class="bulleted-list">
+							<li>Implement data structures needed</li>
+						</ul>
+						<h4>Week 6:</h4>
+						<ul class="bulleted-list">
+							<li>Implement the algorithm with terminal output</li>
+						</ul>
+						<ul class="bulleted-list">
+							<li>Implement brute force with terminal output</li>
+						</ul>
+						<ul class="bulleted-list">
+							<li>Assemble the components</li>
+						</ul>
+						<h4>Week 7:</h4>
+						<ul class="bulleted-list">
+							<li>
+								Look for existing data set to test the algorithm and test
+								extensively
+							</li>
+						</ul>
+						<ul class="bulleted-list">
+							<li>Add corner case handling</li>
+						</ul>
+						<ul class="bulleted-list">
+							<li>
+								Start search for the visualization library and learn about it
+							</li>
+						</ul>
+						<h4>Week 8:</h4>
+						<ul class="bulleted-list">
+							<li>
+								Use the visualization library to map the algorithm to the visual
+								output
+							</li>
+						</ul>
+						<ul class="bulleted-list">
+							<li>
+								Figure out a way to put stop points, add undo and step-forward
+								functions
+							</li>
+						</ul>
+						<h4>Week 9:</h4>
+						<ul class="bulleted-list">
+							<li>Finishing touches and complete what is left</li>
+						</ul>
+						<ul class="bulleted-list">
+							<li>
+								I am expecting some delays in previous weeks due to other
+								projects and midterms
+							</li>
+						</ul>
+						<h4>Week 10:</h4>
+						<ul class="bulleted-list">
+							<li>Final presentation preparations</li>
+						</ul>
+						<h4>Week 11:</h4>
+						<ul class="bulleted-list">
+							<li>Final submissions</li>
+						</ul>
+					</div>
+				</div>
+				<div
+					class="tab-pane fade"
+					id="nav-references-content"
+					role="tabpanel"
+					aria-labelledby="nav-references-tab"
+				>
+					<hr />
+					<br />
+					<h2 id="24d0ff43-586f-4689-b14a-5aa43e4667b2" class="">References</h2>
+					<ul id="779af329-8dea-406c-b59f-8b73bf3133d2" class="bulleted-list">
+						<li>
+							Notes from CMU:
+							<a
+								href="https://www.cs.cmu.edu/~15451-f17/lectures/lec21-sweepline.pdf"
+								>https://www.cs.cmu.edu/~15451-f17/lectures/lec21-sweepline.pdf</a
+							>
+						</li>
+					</ul>
+					<ul id="88bf37f2-fa9a-4bf1-b3e2-4297ff665ff2" class="bulleted-list">
+						<li>
+							Notes from UMD:
+							<a
+								href="https://www.cs.umd.edu/class/spring2020/cmsc754/Lects/lect04-intersection.pdf"
+								>https://www.cs.umd.edu/class/spring2020/cmsc754/Lects/lect04-intersection.pdf</a
+							>
+						</li>
+					</ul>
+				</div>
+				<div
+					class="tab-pane fade"
+					id="nav-description-content"
+					role="tabpanel"
+					aria-labelledby="nav-description-tab"
+				>
+					<hr />
+					<br />
+					<div class="page-body">
+						<h2 id="fcd93bae-d600-4077-a566-5374e27d29d3" class="">
+							Brute Force
+						</h2>
+						<p id="0a219b4e-7f4b-4e2a-850e-feb1b20755bf" class="">
+							In the brute force approach, given n line segments, one would pick
+							2 line segments at a time and check if they intersect. Comparing
+							every line segment with the rest of n-1 line segments will take an
+							O(n^2) time to compute all the intersections. The pseudocode for
+							this approach looks like as follows:
+						</p>
+						<pre
+							id="9088ed9d-01a9-44c6-b201-9dd772182526"
+							class="code"
+						><code>for i in range( len(lineSegments) ):
+      for j in range( i + 1, len(lineSegments) ):
+        checkIntersection(lineSegments[i], lineSegments[j])</code></pre>
+						<p id="56c9b9cf-0071-4ab3-bb0c-f6662481f465" class=""></p>
+						<br />
+						<h2 id="ea5ef08c-9437-4288-8be7-f875ea22b3a8" class="">
+              Line sweep approach
+						</h2>
+            <br />
+						<h3 id="ab57846c-8128-4610-86f7-39772af2e012" class="">
+							Assumptions
+						</h3>
+						<p id="d0247477-8d30-4ecb-9a4b-3fadc7a9251a" class="">
+							Before we start implementing the algorithm, we assume a few
+							conditions, which are special cases, to never occur. In that
+							sense, this algorithm is valid in the general scenarios.
+							Therefore, the following scenarios are assumed to never take
+							place:
+						</p>
+						<ol
+							type="1"
+							id="0f7a5975-2445-42fc-84aa-bb971bc33c0f"
+							class="numbered-list"
+							start="1"
+						>
+							<li>
+								No two line segment share more than one point of intersection.
+								In other words, no two line segments are collinear.
+							</li>
+						</ol>
+						<ol
+							type="1"
+							id="a61609df-e329-4a93-b7aa-026082ce661a"
+							class="numbered-list"
+							start="2"
+						>
+							<li>
+								More than two line segments never intersect at a given point.
+							</li>
+						</ol>
+						<ol
+							type="1"
+							id="5335007e-3649-4f1a-89f6-d02d996a4028"
+							class="numbered-list"
+							start="3"
+						>
+							<li>None of the segments are vertical</li>
+						</ol>
+						<p id="d7c220be-7c91-4a46-8a7a-1e4f7bd746f5" class=""></p>
+						<h3 id="e688ffaa-2f3d-43cf-8468-2fe834d797b9" class="">
+							Data Structures
+						</h3>
+						<p id="8affb3c5-cfa9-4bd4-be9d-f51c09ef8881" class="">
+							In this algorithm, we maintain two data structures to find the
+							intersection of a list of n lines segments, namely:
+						</p>
+						<ul id="14aded3d-6157-44a7-b51e-c7b020c81431" class="bulleted-list">
+							<li>
+								Event queue
+								<p id="9265081f-011f-4e8d-98f0-980585fac65e" class="">
+									This is a list of events that are yet to happen. There are
+									three types of events that we are interested in :
+								</p>
+								<ol
+									type="1"
+									id="a5ba31a4-3186-405f-9330-4b5390ad307c"
+									class="numbered-list"
+									start="1"
+								>
+									<li>Line segment starts</li>
+								</ol>
+								<ol
+									type="1"
+									id="3ca6b517-9b22-4a13-a3ea-56910a0e17f1"
+									class="numbered-list"
+									start="2"
+								>
+									<li>Line segment end</li>
+								</ol>
+								<ol
+									type="1"
+									id="f31e8cbe-f6f9-489c-89ac-59b3a77117fe"
+									class="numbered-list"
+									start="3"
+								>
+									<li>Lines intersect</li>
+								</ol>
+								<p id="483d2421-275a-4c98-a18d-8f3962e412f2" class="">
+									At any given point of time, these events are stored in a
+									sorted manner such that they appear in increasing x
+									co-ordinate of the point where they take place.
+								</p>
+							</li>
+						</ul>
+						<ul id="dc574c5b-0a92-4b57-9980-4b7878f72748" class="bulleted-list">
+							<li>
+								Segment List
+								<p id="25ff48c4-04d3-4d8a-a34c-26f0a992d38e" class="">
+									This is a sorted list of line segments. The lines are sorted
+									in order of the y-coordinates at any point of time during the
+									execution of algorithm.
+								</p>
+								<p id="ebc60a80-7a89-4ff3-9890-649e3d659abe" class="">
+									This stores the list of line segments in slope intercept
+									format — (m_i, b_i). The advantage in doing so is that for any
+									point, if we know the value of the x co-ordinate, we can find
+									the corresponding y value at that point. This is important
+									since, in the algorithm, we would sweep across the x axis in
+									an increasing manner and would also need the
+								</p>
+								<p id="ac1a1c02-2764-4c11-abf3-9bcd08207dda" class="">
+									Additionally, while keeping every line segment sorted at every
+									point of time during the execution of the algorithm, this data
+									structure also allows to
+								</p>
+								<ul
+									id="d2b8972b-3075-419f-b1b6-0fd93aa36267"
+									class="bulleted-list"
+								>
+									<li>Insert a new segment into the data structure.</li>
+								</ul>
+								<ul
+									id="fdd3a5d2-e047-4acf-a922-4fe177852d5c"
+									class="bulleted-list"
+								>
+									<li>Delete a segment from the data structure.</li>
+								</ul>
+								<ul
+									id="5550367f-e033-40e8-a626-3e52e8aaae10"
+									class="bulleted-list"
+								>
+									<li>
+										Find the successor of a segment in the data structure.
+									</li>
+								</ul>
+								<ul
+									id="6a9e0dcb-533f-4344-9de1-bb0d313fd6cd"
+									class="bulleted-list"
+								>
+									<li>
+										Find the predecessor of a segment in the data structure.
+									</li>
+								</ul>
+								<p id="53c14708-3acc-47bd-afa6-5a9bae2a3760" class="">
+									In order to keep the list sorted and provide the above
+									functionality, it uses a variation of AVL tree.
+								</p>
+							</li>
+						</ul>
+						<p id="e415f341-a2f1-4658-8993-b0da4187b46e" class=""></p>
+						<h3 id="754a4de2-8efc-4345-92fd-1dc65a03804e" class="">
+							Algorithm and Pseudocode
+						</h3>
+						<p id="735664a3-65e0-40c5-bbdb-e1a17dfb94ce" class="">
+							Every line segment is scanned and its &quot;line segment
+							start&quot; and &quot;line segment end&quot; events added to the
+							event list. The event list is then processed until empty.
+						</p>
+						<p id="a0dbde7d-3e78-4f01-abfb-4f6988e44dcc" class="">
+							In order to find the intersection of line segments, we sweep an
+							imaginary vertical line across the x axis. This sweeping is not at
+							each pixel, but rather at the points that come up in the event
+							list. At each point, we analyze the order in which the line
+							segments appear on this imaginary line. It can be observed that
+							only the lines that are adjacent to one another, can ever
+							intersect in the near future. The proof of this can be found in
+							the notes provided in the reference links.
+						</p>
+						<p id="d9dd7fb2-4154-448c-a423-a793d4d1c114" class="">
+							We process the event list as follows. At a point of time when our
+							imaginary line is at X = <em>x,</em> for every line in the segment
+							list, we check — if and when — it intersects with one of its
+							neighbors. If it does intersect, we calculate the x coordinate of
+							that point and add this &quot;intersection&quot; event in the
+							event list at the appropriate position — as the event queue is
+							sorted by x coordinate values.
+						</p>
+						<p id="b592a2fd-308f-4c79-aa6a-0769a98bc8e0" class="">
+							We keep repeating this till all the events are completed and
+						</p>
+						<p id="3f7e1a02-d29f-4d53-901b-15479ced4297" class="">
+							The sweeping line in a way divides the region in three parts, the
+							events that already occurred before that line, the event that
+							occurs when the X = <em>x</em> and the events that are yet to
+							occur and are on the right of the sweep line.
+						</p>
+						<p id="f5e9a78b-64d5-4fd1-bf91-09b6d6547084" class="">
+							The pseudocode for this algorithm, taken from the notes mentioned
+							in the
+							<a
+								href="https://www.cs.cmu.edu/~15451-f17/lectures/lec21-sweepline.pdf"
+								>reference</a
+							>
+							is as follows:
+						</p>
+						<pre
+							id="cbf8358f-06e1-494a-81b4-593d8c993490"
+							class="code"
+						><code>def FindSegmentIntersections(S):
+      create an empty priority queue EQ
+      for each segment S, insert its start and end events into EQ create an empty balanced tree SL
+        while (EQ is not empty)
+          E := deletemin(EQ)
+          if E is start of segment s then
+            insert s into SL
+            CheckForIntersect(EQ, s, successor of s) 
+            CheckForIntersect(EQ, s, predecessor of s)
+          else if E is the end of segment s then 
+            CheckForIntersection (EQ, pred of s, succ of s) delete s from SL
+          else if E is cross event for segments s1 and s2 then 
+            println ”s1 and s2 intersect”
+            remove s1 and s2 from SL
+            re−insert s1 and s2 into SL in the opposite order 
+            CheckForIntersection (EQ, s1, new neighbor of s1) 
+            CheckForIntersection (EQ, s2, new neighbor of s2)</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="./index.js"></script>
 </html>
