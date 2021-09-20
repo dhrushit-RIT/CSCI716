@@ -1,0 +1,1254 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>line segment</title>
+		<style>
+			/* cspell:disable-file */
+			/* webkit printing magic: print all background colors */
+			html {
+				-webkit-print-color-adjust: exact;
+			}
+			* {
+				box-sizing: border-box;
+				-webkit-print-color-adjust: exact;
+			}
+
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+			}
+			@media only screen {
+				body {
+					margin: 2em auto;
+					max-width: 900px;
+					color: rgb(55, 53, 47);
+				}
+			}
+
+			body {
+				line-height: 1.5;
+				white-space: pre-wrap;
+			}
+
+			a,
+			a.visited {
+				color: inherit;
+				text-decoration: underline;
+			}
+
+			.pdf-relative-link-path {
+				font-size: 80%;
+				color: #444;
+			}
+
+			h1,
+			h2,
+			h3 {
+				letter-spacing: -0.01em;
+				line-height: 1.2;
+				font-weight: 600;
+				margin-bottom: 0;
+			}
+
+			.page-title {
+				font-size: 2.5rem;
+				font-weight: 700;
+				margin-top: 0;
+				margin-bottom: 0.75em;
+			}
+
+			h1 {
+				font-size: 1.875rem;
+				margin-top: 1.875rem;
+			}
+
+			h2 {
+				font-size: 1.5rem;
+				margin-top: 1.5rem;
+			}
+
+			h3 {
+				font-size: 1.25rem;
+				margin-top: 1.25rem;
+			}
+
+			.source {
+				border: 1px solid #ddd;
+				border-radius: 3px;
+				padding: 1.5em;
+				word-break: break-all;
+			}
+
+			.callout {
+				border-radius: 3px;
+				padding: 1rem;
+			}
+
+			figure {
+				margin: 1.25em 0;
+				page-break-inside: avoid;
+			}
+
+			figcaption {
+				opacity: 0.5;
+				font-size: 85%;
+				margin-top: 0.5em;
+			}
+
+			mark {
+				background-color: transparent;
+			}
+
+			.indented {
+				padding-left: 1.5em;
+			}
+
+			hr {
+				background: transparent;
+				display: block;
+				width: 100%;
+				height: 1px;
+				visibility: visible;
+				border: none;
+				border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+			}
+
+			img {
+				max-width: 100%;
+			}
+
+			@media only print {
+				img {
+					max-height: 100vh;
+					object-fit: contain;
+				}
+			}
+
+			@page {
+				margin: 1in;
+			}
+
+			.collection-content {
+				font-size: 0.875rem;
+			}
+
+			.column-list {
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.column {
+				padding: 0 1em;
+			}
+
+			.column:first-child {
+				padding-left: 0;
+			}
+
+			.column:last-child {
+				padding-right: 0;
+			}
+
+			.table_of_contents-item {
+				display: block;
+				font-size: 0.875rem;
+				line-height: 1.3;
+				padding: 0.125rem;
+			}
+
+			.table_of_contents-indent-1 {
+				margin-left: 1.5rem;
+			}
+
+			.table_of_contents-indent-2 {
+				margin-left: 3rem;
+			}
+
+			.table_of_contents-indent-3 {
+				margin-left: 4.5rem;
+			}
+
+			.table_of_contents-link {
+				text-decoration: none;
+				opacity: 0.7;
+				border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+			}
+
+			table,
+			th,
+			td {
+				border: 1px solid rgba(55, 53, 47, 0.09);
+				border-collapse: collapse;
+			}
+
+			table {
+				border-left: none;
+				border-right: none;
+			}
+
+			th,
+			td {
+				font-weight: normal;
+				padding: 0.25em 0.5em;
+				line-height: 1.5;
+				min-height: 1.5em;
+				text-align: left;
+			}
+
+			th {
+				color: rgba(55, 53, 47, 0.6);
+			}
+
+			ol,
+			ul {
+				margin: 0;
+				margin-block-start: 0.6em;
+				margin-block-end: 0.6em;
+			}
+
+			li > ol:first-child,
+			li > ul:first-child {
+				margin-block-start: 0.6em;
+			}
+
+			ul > li {
+				list-style: disc;
+			}
+
+			ul.to-do-list {
+				text-indent: -1.7em;
+			}
+
+			ul.to-do-list > li {
+				list-style: none;
+			}
+
+			.to-do-children-checked {
+				text-decoration: line-through;
+				opacity: 0.375;
+			}
+
+			ul.toggle > li {
+				list-style: none;
+			}
+
+			ul {
+				padding-inline-start: 1.7em;
+			}
+
+			ul > li {
+				padding-left: 0.1em;
+			}
+
+			ol {
+				padding-inline-start: 1.6em;
+			}
+
+			ol > li {
+				padding-left: 0.2em;
+			}
+
+			.mono ol {
+				padding-inline-start: 2em;
+			}
+
+			.mono ol > li {
+				text-indent: -0.4em;
+			}
+
+			.toggle {
+				padding-inline-start: 0em;
+				list-style-type: none;
+			}
+
+			/* Indent toggle children */
+			.toggle > li > details {
+				padding-left: 1.7em;
+			}
+
+			.toggle > li > details > summary {
+				margin-left: -1.1em;
+			}
+
+			.selected-value {
+				display: inline-block;
+				padding: 0 0.5em;
+				background: rgba(206, 205, 202, 0.5);
+				border-radius: 3px;
+				margin-right: 0.5em;
+				margin-top: 0.3em;
+				margin-bottom: 0.3em;
+				white-space: nowrap;
+			}
+
+			.collection-title {
+				display: inline-block;
+				margin-right: 1em;
+			}
+
+			time {
+				opacity: 0.5;
+			}
+
+			.icon {
+				display: inline-block;
+				max-width: 1.2em;
+				max-height: 1.2em;
+				text-decoration: none;
+				vertical-align: text-bottom;
+				margin-right: 0.5em;
+			}
+
+			img.icon {
+				border-radius: 3px;
+			}
+
+			.user-icon {
+				width: 1.5em;
+				height: 1.5em;
+				border-radius: 100%;
+				margin-right: 0.5rem;
+			}
+
+			.user-icon-inner {
+				font-size: 0.8em;
+			}
+
+			.text-icon {
+				border: 1px solid #000;
+				text-align: center;
+			}
+
+			.page-cover-image {
+				display: block;
+				object-fit: cover;
+				width: 100%;
+				height: 30vh;
+			}
+
+			.page-header-icon {
+				font-size: 3rem;
+				margin-bottom: 1rem;
+			}
+
+			.page-header-icon-with-cover {
+				margin-top: -0.72em;
+				margin-left: 0.07em;
+			}
+
+			.page-header-icon img {
+				border-radius: 3px;
+			}
+
+			.link-to-page {
+				margin: 1em 0;
+				padding: 0;
+				border: none;
+				font-weight: 500;
+			}
+
+			p > .user {
+				opacity: 0.5;
+			}
+
+			td > .user,
+			td > time {
+				white-space: nowrap;
+			}
+
+			input[type="checkbox"] {
+				transform: scale(1.5);
+				margin-right: 0.6em;
+				vertical-align: middle;
+			}
+
+			p {
+				margin-top: 0.5em;
+				margin-bottom: 0.5em;
+			}
+
+			.image {
+				border: none;
+				margin: 1.5em 0;
+				padding: 0;
+				border-radius: 0;
+				text-align: center;
+			}
+
+			.code,
+			code {
+				background: rgba(135, 131, 120, 0.15);
+				border-radius: 3px;
+				padding: 0.2em 0.4em;
+				border-radius: 3px;
+				font-size: 85%;
+				tab-size: 2;
+			}
+
+			code {
+				color: #eb5757;
+			}
+
+			.code {
+				padding: 1.5em 1em;
+			}
+
+			.code-wrap {
+				white-space: pre-wrap;
+				word-break: break-all;
+			}
+
+			.code > code {
+				background: none;
+				padding: 0;
+				font-size: 100%;
+				color: inherit;
+			}
+
+			blockquote {
+				font-size: 1.25em;
+				margin: 1em 0;
+				padding-left: 1em;
+				border-left: 3px solid rgb(55, 53, 47);
+			}
+
+			.bookmark {
+				text-decoration: none;
+				max-height: 8em;
+				padding: 0;
+				display: flex;
+				width: 100%;
+				align-items: stretch;
+			}
+
+			.bookmark-title {
+				font-size: 0.85em;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				height: 1.75em;
+				white-space: nowrap;
+			}
+
+			.bookmark-text {
+				display: flex;
+				flex-direction: column;
+			}
+
+			.bookmark-info {
+				flex: 4 1 180px;
+				padding: 12px 14px 14px;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+			}
+
+			.bookmark-image {
+				width: 33%;
+				flex: 1 1 180px;
+				display: block;
+				position: relative;
+				object-fit: cover;
+				border-radius: 1px;
+			}
+
+			.bookmark-description {
+				color: rgba(55, 53, 47, 0.6);
+				font-size: 0.75em;
+				overflow: hidden;
+				max-height: 4.5em;
+				word-break: break-word;
+			}
+
+			.bookmark-href {
+				font-size: 0.75em;
+				margin-top: 0.25em;
+			}
+
+			.sans {
+				font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol";
+			}
+			.code {
+				font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono",
+					"Liberation Mono", Courier, monospace;
+			}
+			.serif {
+				font-family: Lyon-Text, Georgia, ui-serif, serif;
+			}
+			.mono {
+				font-family: iawriter-mono, Nitti, Menlo, Courier, monospace;
+			}
+			.pdf .sans {
+				font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol", "Twemoji", "Noto Color Emoji",
+					"Noto Sans CJK JP";
+			}
+			.pdf:lang(zh-CN) .sans {
+				font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol", "Twemoji", "Noto Color Emoji",
+					"Noto Sans CJK SC";
+			}
+			.pdf:lang(zh-TW) .sans {
+				font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol", "Twemoji", "Noto Color Emoji",
+					"Noto Sans CJK TC";
+			}
+			.pdf:lang(ko-KR) .sans {
+				font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol", "Twemoji", "Noto Color Emoji",
+					"Noto Sans CJK KR";
+			}
+			.pdf .code {
+				font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas,
+					"PT Mono", "Liberation Mono", Courier, monospace, "Twemoji",
+					"Noto Color Emoji", "Noto Sans Mono CJK JP";
+			}
+			.pdf:lang(zh-CN) .code {
+				font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas,
+					"PT Mono", "Liberation Mono", Courier, monospace, "Twemoji",
+					"Noto Color Emoji", "Noto Sans Mono CJK SC";
+			}
+			.pdf:lang(zh-TW) .code {
+				font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas,
+					"PT Mono", "Liberation Mono", Courier, monospace, "Twemoji",
+					"Noto Color Emoji", "Noto Sans Mono CJK TC";
+			}
+			.pdf:lang(ko-KR) .code {
+				font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas,
+					"PT Mono", "Liberation Mono", Courier, monospace, "Twemoji",
+					"Noto Color Emoji", "Noto Sans Mono CJK KR";
+			}
+			.pdf .serif {
+				font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, "Twemoji",
+					"Noto Color Emoji", "Noto Serif CJK JP";
+			}
+			.pdf:lang(zh-CN) .serif {
+				font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, "Twemoji",
+					"Noto Color Emoji", "Noto Serif CJK SC";
+			}
+			.pdf:lang(zh-TW) .serif {
+				font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, "Twemoji",
+					"Noto Color Emoji", "Noto Serif CJK TC";
+			}
+			.pdf:lang(ko-KR) .serif {
+				font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, "Twemoji",
+					"Noto Color Emoji", "Noto Serif CJK KR";
+			}
+			.pdf .mono {
+				font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace,
+					"Twemoji", "Noto Color Emoji", "Noto Sans Mono CJK JP";
+			}
+			.pdf:lang(zh-CN) .mono {
+				font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace,
+					"Twemoji", "Noto Color Emoji", "Noto Sans Mono CJK SC";
+			}
+			.pdf:lang(zh-TW) .mono {
+				font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace,
+					"Twemoji", "Noto Color Emoji", "Noto Sans Mono CJK TC";
+			}
+			.pdf:lang(ko-KR) .mono {
+				font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace,
+					"Twemoji", "Noto Color Emoji", "Noto Sans Mono CJK KR";
+			}
+			.highlight-default {
+			}
+			.highlight-gray {
+				color: rgb(155, 154, 151);
+			}
+			.highlight-brown {
+				color: rgb(100, 71, 58);
+			}
+			.highlight-orange {
+				color: rgb(217, 115, 13);
+			}
+			.highlight-yellow {
+				color: rgb(223, 171, 1);
+			}
+			.highlight-teal {
+				color: rgb(15, 123, 108);
+			}
+			.highlight-blue {
+				color: rgb(11, 110, 153);
+			}
+			.highlight-purple {
+				color: rgb(105, 64, 165);
+			}
+			.highlight-pink {
+				color: rgb(173, 26, 114);
+			}
+			.highlight-red {
+				color: rgb(224, 62, 62);
+			}
+			.highlight-gray_background {
+				background: rgb(235, 236, 237);
+			}
+			.highlight-brown_background {
+				background: rgb(233, 229, 227);
+			}
+			.highlight-orange_background {
+				background: rgb(250, 235, 221);
+			}
+			.highlight-yellow_background {
+				background: rgb(251, 243, 219);
+			}
+			.highlight-teal_background {
+				background: rgb(221, 237, 234);
+			}
+			.highlight-blue_background {
+				background: rgb(221, 235, 241);
+			}
+			.highlight-purple_background {
+				background: rgb(234, 228, 242);
+			}
+			.highlight-pink_background {
+				background: rgb(244, 223, 235);
+			}
+			.highlight-red_background {
+				background: rgb(251, 228, 228);
+			}
+			.block-color-default {
+				color: inherit;
+				fill: inherit;
+			}
+			.block-color-gray {
+				color: rgba(55, 53, 47, 0.6);
+				fill: rgba(55, 53, 47, 0.6);
+			}
+			.block-color-brown {
+				color: rgb(100, 71, 58);
+				fill: rgb(100, 71, 58);
+			}
+			.block-color-orange {
+				color: rgb(217, 115, 13);
+				fill: rgb(217, 115, 13);
+			}
+			.block-color-yellow {
+				color: rgb(223, 171, 1);
+				fill: rgb(223, 171, 1);
+			}
+			.block-color-teal {
+				color: rgb(15, 123, 108);
+				fill: rgb(15, 123, 108);
+			}
+			.block-color-blue {
+				color: rgb(11, 110, 153);
+				fill: rgb(11, 110, 153);
+			}
+			.block-color-purple {
+				color: rgb(105, 64, 165);
+				fill: rgb(105, 64, 165);
+			}
+			.block-color-pink {
+				color: rgb(173, 26, 114);
+				fill: rgb(173, 26, 114);
+			}
+			.block-color-red {
+				color: rgb(224, 62, 62);
+				fill: rgb(224, 62, 62);
+			}
+			.block-color-gray_background {
+				background: rgb(235, 236, 237);
+			}
+			.block-color-brown_background {
+				background: rgb(233, 229, 227);
+			}
+			.block-color-orange_background {
+				background: rgb(250, 235, 221);
+			}
+			.block-color-yellow_background {
+				background: rgb(251, 243, 219);
+			}
+			.block-color-teal_background {
+				background: rgb(221, 237, 234);
+			}
+			.block-color-blue_background {
+				background: rgb(221, 235, 241);
+			}
+			.block-color-purple_background {
+				background: rgb(234, 228, 242);
+			}
+			.block-color-pink_background {
+				background: rgb(244, 223, 235);
+			}
+			.block-color-red_background {
+				background: rgb(251, 228, 228);
+			}
+			.select-value-color-default {
+				background-color: rgba(206, 205, 202, 0.5);
+			}
+			.select-value-color-gray {
+				background-color: rgba(155, 154, 151, 0.4);
+			}
+			.select-value-color-brown {
+				background-color: rgba(140, 46, 0, 0.2);
+			}
+			.select-value-color-orange {
+				background-color: rgba(245, 93, 0, 0.2);
+			}
+			.select-value-color-yellow {
+				background-color: rgba(233, 168, 0, 0.2);
+			}
+			.select-value-color-green {
+				background-color: rgba(0, 135, 107, 0.2);
+			}
+			.select-value-color-blue {
+				background-color: rgba(0, 120, 223, 0.2);
+			}
+			.select-value-color-purple {
+				background-color: rgba(103, 36, 222, 0.2);
+			}
+			.select-value-color-pink {
+				background-color: rgba(221, 0, 129, 0.2);
+			}
+			.select-value-color-red {
+				background-color: rgba(255, 0, 26, 0.2);
+			}
+
+			.checkbox {
+				display: inline-flex;
+				vertical-align: text-bottom;
+				width: 16;
+				height: 16;
+				background-size: 16px;
+				margin-left: 2px;
+				margin-right: 5px;
+			}
+
+			.checkbox-on {
+				background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+			}
+
+			.checkbox-off {
+				background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+			}
+		</style>
+	</head>
+	<body>
+		<article id="c2ed8ba4-0dcd-428e-8e1f-b377501854e3" class="page sans">
+			<header><h1 class="page-title">line segment</h1></header>
+			<div class="page-body">
+				<h1 id="38ed6fa5-aa1f-4086-a08d-c8d195602ae0" class="">
+					Title: Visualizing Line Segment Intersection Algorithms
+				</h1>
+				<h2 id="8adf7062-0b73-43c6-9879-f8451af4b085" class="">Team Members</h2>
+				<p id="2e74c48b-d585-4c86-a4d3-c265a6db0e1b" class="">
+					The project is not simple enough for one person. I would be woking on
+					it all by myself.
+				</p>
+				<p id="9ffd96cf-86d6-42db-9698-556f62cd0fbe" class="">
+					Following are the team members:
+				</p>
+				<ul id="379830a0-0299-49ea-b964-d88788ccbcb0" class="bulleted-list">
+					<li>Dhrushit Raval - dr9703</li>
+				</ul>
+				<h2 id="7111f297-832a-4ee9-87fb-1ad64fac0e8a" class="">
+					Problem Description
+				</h2>
+				<p id="a1e3b6a9-5f95-4d52-b10e-cdadf9901cc0" class="">
+					One of the very basic problems in computational geometry, is to find
+					intersection of two lines segments. In this project, I will build a
+					tool that would help visualize the algorithm that is used to find the
+					intersection in hopes to make it easy to understand. The algorithm
+					used is a simple line sweep algorithm.
+				</p>
+				<p id="f0d34709-a57b-4676-a1f1-6879aaa0f1af" class="">
+					In this project, I will implement the line sweep algorithm as well as
+					a brute algorithm for finding intersections for n line segments. This
+					would also allow user to compare and understand how things work.
+					Further details about how this algorithms is provided in the
+					literature tab, and a visualization, will soon be provided in the
+					visualization tab.
+				</p>
+				<p id="5208ca94-7fe5-4d07-aaca-f1b23065a965" class="">
+					The complexity of this algorithm is
+					<style>
+						@import url("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css");</style
+					><span
+						data-token-index="0"
+						contenteditable="false"
+						class="notion-text-equation-token"
+						style="
+							user-select: all;
+							-webkit-user-select: all;
+							-moz-user-select: all;
+						"
+						><span></span
+						><span
+							><span class="katex"
+								><span class="katex-mathml"
+									><math xmlns="http://www.w3.org/1998/Math/MathML"
+										><semantics
+											><mrow
+												><mi>O</mi><mo stretchy="false">(</mo
+												><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo
+												><mi>I</mi><mo stretchy="false">)</mo><mo>∗</mo
+												><mi>l</mi><mi>o</mi><mi>g</mi
+												><mo stretchy="false">(</mo><mi>n</mi
+												><mo stretchy="false">)</mo
+												><mo stretchy="false">)</mo></mrow
+											><annotation encoding="application/x-tex"
+												>O( (n+I) * log(n))</annotation
+											></semantics
+										></math
+									></span
+								><span class="katex-html" aria-hidden="true"
+									><span class="base"
+										><span
+											class="strut"
+											style="height: 1em; vertical-align: -0.25em"
+										></span
+										><span
+											class="mord mathnormal"
+											style="margin-right: 0.02778em"
+											>O</span
+										><span class="mopen">((</span
+										><span class="mord mathnormal">n</span
+										><span
+											class="mspace"
+											style="margin-right: 0.2222222222222222em"
+										></span
+										><span class="mbin">+</span
+										><span
+											class="mspace"
+											style="margin-right: 0.2222222222222222em"
+										></span></span
+									><span class="base"
+										><span
+											class="strut"
+											style="height: 1em; vertical-align: -0.25em"
+										></span
+										><span
+											class="mord mathnormal"
+											style="margin-right: 0.07847em"
+											>I</span
+										><span class="mclose">)</span
+										><span
+											class="mspace"
+											style="margin-right: 0.2222222222222222em"
+										></span
+										><span class="mbin">∗</span
+										><span
+											class="mspace"
+											style="margin-right: 0.2222222222222222em"
+										></span></span
+									><span class="base"
+										><span
+											class="strut"
+											style="height: 1em; vertical-align: -0.25em"
+										></span
+										><span
+											class="mord mathnormal"
+											style="margin-right: 0.01968em"
+											>l</span
+										><span class="mord mathnormal">o</span
+										><span
+											class="mord mathnormal"
+											style="margin-right: 0.03588em"
+											>g</span
+										><span class="mopen">(</span
+										><span class="mord mathnormal">n</span
+										><span class="mclose">))</span></span
+									></span
+								></span
+							></span
+						><span>﻿</span></span
+					>. The explanation of the same can be found in the literature section.
+				</p>
+				<h2 id="1823c039-6032-48a6-a0e0-0170070089c5" class="">Timeline</h2>
+				<p id="6ed7a14c-92d8-42b9-8096-1030288d7392" class="">
+					As per the deadlines set by the university, the final submission will
+					be done in week 11. Currently, this is week 4. And as I start building
+					up the tools, I would have 6 weeks to complete the project. Following
+					timeline is what I estimate would be followed in this project:
+				</p>
+				<h3 id="e7b77477-1751-4cc8-a57d-173166e51419" class="">Week 5:</h3>
+				<ul id="966de66c-d2d9-4752-9f08-fda724f90fb6" class="bulleted-list">
+					<li>Iterate over the algorithm details</li>
+				</ul>
+				<ul id="46e9ecb2-95c4-47cc-90d6-e4f07739a795" class="bulleted-list">
+					<li>Implement data structures needed</li>
+				</ul>
+				<h3 id="7e00c777-644a-4baf-a577-3e4135f98cec" class="">Week 6:</h3>
+				<ul id="63597674-540e-49e7-abab-889f53c2e656" class="bulleted-list">
+					<li>Implement the algorithm with terminal output</li>
+				</ul>
+				<ul id="ea24a3a7-272f-458e-869b-4de912026757" class="bulleted-list">
+					<li>Implement brute force with terminal output</li>
+				</ul>
+				<ul id="0a846bbd-746f-4486-b9ed-db7f507dbc0c" class="bulleted-list">
+					<li>Assemble the components</li>
+				</ul>
+				<h3 id="495eea2e-1941-49c6-89af-0a7aedc549c2" class="">Week 7:</h3>
+				<ul id="2870a2cb-2cfa-461b-a640-aaa732cd9ee2" class="bulleted-list">
+					<li>
+						Look for existing data set to test the algorithm and test
+						extensively
+					</li>
+				</ul>
+				<ul id="bbbcb414-921b-4360-9826-2a94f14e46f0" class="bulleted-list">
+					<li>Add corner case handling</li>
+				</ul>
+				<ul id="ee564fa9-9cfb-4a4d-80d3-e635c7d5ac72" class="bulleted-list">
+					<li>Start search for the visualization library and learn about it</li>
+				</ul>
+				<h3 id="19a34e7b-0fe6-4b57-a61e-49c5a6196a61" class="">
+					<strong>Week 8:</strong>
+				</h3>
+				<ul id="c800765d-26af-4ca7-9333-32002a22e9b8" class="bulleted-list">
+					<li>
+						Use the visualization library to map the algorithm to the visual
+						output
+					</li>
+				</ul>
+				<ul id="dd21c2ad-0434-4f7e-a4a0-d4471b677a90" class="bulleted-list">
+					<li>
+						Figure out a way to put stop points, add undo and step-forward
+						functions
+					</li>
+				</ul>
+				<p id="52e8f228-c59e-4f12-b0c6-3a93ec676fcd" class="">
+					<strong>Week 9:</strong>
+				</p>
+				<ul id="82e2e31d-db93-4a32-ab9c-6ef7669f5788" class="bulleted-list">
+					<li>Finishing touches and complete what is left</li>
+				</ul>
+				<ul id="a6173dfb-c95f-4a16-aa9f-1a7592fb03dd" class="bulleted-list">
+					<li>
+						I am expecting some delays in previous weeks due to other projects
+						and midterms
+					</li>
+				</ul>
+				<h3 id="7a66898d-d01e-4d96-a959-73f566129b21" class="">Week 10:</h3>
+				<ul id="0bb94e1a-a9be-4edb-bedc-e5facfdfb079" class="bulleted-list">
+					<li>Final presentation preparations</li>
+				</ul>
+				<h3 id="e9e27f86-a5f1-40a2-af72-eeae309ddbfe" class="">Week 11:</h3>
+				<ul id="f1485bc3-440e-44ee-830b-7730132bbd1b" class="bulleted-list">
+					<li>Final submissions</li>
+				</ul>
+				<p id="736d9cea-553d-49c2-959b-66c40d8a73fa" class=""></p>
+				<h2 id="1dc6e28d-5076-436d-8fc4-ec936295b422" class="">
+					Algorithm Notes
+				</h2>
+				<ul id="942dfd2f-5e07-4e95-90fc-4b8ab4ec2959" class="bulleted-list">
+					<li>Re-iterate over the notes and literature</li>
+				</ul>
+				<ul id="30bc1196-94ec-4377-a8f7-93e9d6f4296d" class="bulleted-list">
+					<li>
+						Overall Implementation
+						<ul id="c4143356-0dcc-4692-b1d6-947125ca8305" class="bulleted-list">
+							<li>O(n^2) for comparison</li>
+						</ul>
+						<ul id="85b20ecd-17ef-4ff4-87d8-2c18a19b5fef" class="bulleted-list">
+							<li>O((n+k) logn) the actual algorithm</li>
+						</ul>
+					</li>
+				</ul>
+				<ul id="8c7cadb0-8f17-425f-bcc3-9598a2a8e3fd" class="bulleted-list">
+					<li>
+						Implementation Details
+						<ul id="674771b6-a838-425f-a34d-c0c2e1e35ff4" class="bulleted-list">
+							<li>
+								Segment List
+								<ul
+									id="5fb4202c-6d13-4eb2-827f-c4b217fb8091"
+									class="bulleted-list"
+								>
+									<li>
+										Data stored in slope, intercept format (<style>
+											@import url("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css");</style
+										><span
+											data-token-index="0"
+											contenteditable="false"
+											class="notion-text-equation-token"
+											style="
+												user-select: all;
+												-webkit-user-select: all;
+												-moz-user-select: all;
+											"
+											><span></span
+											><span
+												><span class="katex"
+													><span class="katex-mathml"
+														><math xmlns="http://www.w3.org/1998/Math/MathML"
+															><semantics
+																><mrow
+																	><msub><mi>m</mi><mi>i</mi></msub
+																	><mo separator="true">,</mo
+																	><msub><mi>b</mi><mi>i</mi></msub
+																	><mo stretchy="false">)</mo></mrow
+																><annotation encoding="application/x-tex"
+																	>m_i,b_i)</annotation
+																></semantics
+															></math
+														></span
+													><span class="katex-html" aria-hidden="true"
+														><span class="base"
+															><span
+																class="strut"
+																style="height: 1em; vertical-align: -0.25em"
+															></span
+															><span class="mord"
+																><span class="mord mathnormal">m</span
+																><span class="msupsub"
+																	><span class="vlist-t vlist-t2"
+																		><span class="vlist-r"
+																			><span
+																				class="vlist"
+																				style="height: 0.31166399999999994em"
+																				><span
+																					style="
+																						top: -2.5500000000000003em;
+																						margin-left: 0em;
+																						margin-right: 0.05em;
+																					"
+																					><span
+																						class="pstrut"
+																						style="height: 2.7em"
+																					></span
+																					><span
+																						class="
+																							sizing
+																							reset-size6
+																							size3
+																							mtight
+																						"
+																						><span
+																							class="mord mathnormal mtight"
+																							>i</span
+																						></span
+																					></span
+																				></span
+																			><span class="vlist-s">​</span></span
+																		><span class="vlist-r"
+																			><span
+																				class="vlist"
+																				style="height: 0.15em"
+																				><span></span></span></span></span></span></span
+															><span class="mpunct">,</span
+															><span
+																class="mspace"
+																style="margin-right: 0.16666666666666666em"
+															></span
+															><span class="mord"
+																><span class="mord mathnormal">b</span
+																><span class="msupsub"
+																	><span class="vlist-t vlist-t2"
+																		><span class="vlist-r"
+																			><span
+																				class="vlist"
+																				style="height: 0.31166399999999994em"
+																				><span
+																					style="
+																						top: -2.5500000000000003em;
+																						margin-left: 0em;
+																						margin-right: 0.05em;
+																					"
+																					><span
+																						class="pstrut"
+																						style="height: 2.7em"
+																					></span
+																					><span
+																						class="
+																							sizing
+																							reset-size6
+																							size3
+																							mtight
+																						"
+																						><span
+																							class="mord mathnormal mtight"
+																							>i</span
+																						></span
+																					></span
+																				></span
+																			><span class="vlist-s">​</span></span
+																		><span class="vlist-r"
+																			><span
+																				class="vlist"
+																				style="height: 0.15em"
+																				><span></span></span></span></span></span></span
+															><span class="mclose">)</span></span
+														></span
+													></span
+												></span
+											><span>﻿</span></span
+										>
+										<ul
+											id="02249281-e4b6-4424-bcaf-7cec5e470acd"
+											class="bulleted-list"
+										>
+											<li>red-black tree</li>
+										</ul>
+										<ul
+											id="f42acddc-66c9-4596-8233-38d7ebcf51a0"
+											class="bulleted-list"
+										>
+											<li>skiplist</li>
+										</ul>
+									</li>
+								</ul>
+								<ul
+									id="fc03f805-0db7-4286-9b1a-695466a90ba7"
+									class="bulleted-list"
+								>
+									<li>
+										For Insert, Delete, Find Successor, Find Predecessor in
+										O(<style>
+											@import url("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css");</style
+										><span
+											data-token-index="0"
+											contenteditable="false"
+											class="notion-text-equation-token"
+											style="
+												user-select: all;
+												-webkit-user-select: all;
+												-moz-user-select: all;
+											"
+											><span></span
+											><span
+												><span class="katex"
+													><span class="katex-mathml"
+														><math xmlns="http://www.w3.org/1998/Math/MathML"
+															><semantics
+																><mrow
+																	><mi>l</mi><mi>n</mi
+																	><mo stretchy="false">(</mo><mi>n</mi
+																	><mo stretchy="false">)</mo></mrow
+																><annotation encoding="application/x-tex"
+																	>ln(n)</annotation
+																></semantics
+															></math
+														></span
+													><span class="katex-html" aria-hidden="true"
+														><span class="base"
+															><span
+																class="strut"
+																style="height: 1em; vertical-align: -0.25em"
+															></span
+															><span
+																class="mord mathnormal"
+																style="margin-right: 0.01968em"
+																>l</span
+															><span class="mord mathnormal">n</span
+															><span class="mopen">(</span
+															><span class="mord mathnormal">n</span
+															><span class="mclose">)</span></span
+														></span
+													></span
+												></span
+											><span>﻿</span></span
+										>)
+										<ul
+											id="e2762b62-db9c-4d3b-ac0b-f8c0e4f63b29"
+											class="bulleted-list"
+										>
+											<li>Splay Tree</li>
+										</ul>
+										<ul
+											id="5282b35f-2020-4119-8799-34bb7ca04de3"
+											class="bulleted-list"
+										>
+											<li>AVL Tree</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+						<ul id="5b08f8fd-6c4b-406d-b8a5-42bf880786b2" class="bulleted-list">
+							<li>
+								Event Queue
+								<ul
+									id="3c3c05b7-b697-4697-bf0b-9bdccd0b46d9"
+									class="bulleted-list"
+								>
+									<li>
+										Events
+										<ul
+											id="d716e197-e069-4c91-a329-0cc0c6fbb80f"
+											class="bulleted-list"
+										>
+											<li>Start of segment</li>
+										</ul>
+										<ul
+											id="03f36553-0e31-4557-a3eb-ab85e5d0909a"
+											class="bulleted-list"
+										>
+											<li>End of segment</li>
+										</ul>
+										<ul
+											id="5c1822a4-0d4a-40f7-9d64-5f5a52ee93ad"
+											class="bulleted-list"
+										>
+											<li>Intersection of segments</li>
+										</ul>
+									</li>
+								</ul>
+								<ul
+									id="527eb70e-1e14-4c7b-ad32-2ceb6526032c"
+									class="bulleted-list"
+								>
+									<li>
+										functions - <strong>priority queue</strong>
+										<ul
+											id="3f72e28f-2064-48d4-a57d-cb6e492f54c4"
+											class="bulleted-list"
+										>
+											<li>insert</li>
+										</ul>
+										<ul
+											id="c693af24-81e1-424c-94f4-9752232091e6"
+											class="bulleted-list"
+										>
+											<li>findmin</li>
+										</ul>
+										<ul
+											id="2f943887-4c48-421a-9577-2759bd6424d7"
+											class="bulleted-list"
+										>
+											<li>deletemin</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul id="0667b186-a3b9-4246-9431-fed44351ebbe" class="bulleted-list">
+					<li>Verify with existing data set of inputs</li>
+				</ul>
+				<ul id="bbdbfeb7-cfce-4647-baa1-ff8b480297d0" class="bulleted-list">
+					<li>
+						Handle corner cases of vertical lines, overlapping lines, multiple
+						segment intersection(long term)
+					</li>
+				</ul>
+				<h2 id="24d0ff43-586f-4689-b14a-5aa43e4667b2" class="">References</h2>
+				<ul id="779af329-8dea-406c-b59f-8b73bf3133d2" class="bulleted-list">
+					<li>
+						Notes from CMU:
+						<a
+							href="https://www.cs.cmu.edu/~15451-f17/lectures/lec21-sweepline.pdf"
+							>https://www.cs.cmu.edu/~15451-f17/lectures/lec21-sweepline.pdf</a
+						>
+					</li>
+				</ul>
+				<ul id="88bf37f2-fa9a-4bf1-b3e2-4297ff665ff2" class="bulleted-list">
+					<li>
+						Notes from UMD:
+						<a
+							href="https://www.cs.umd.edu/class/spring2020/cmsc754/Lects/lect04-intersection.pdf"
+							>https://www.cs.umd.edu/class/spring2020/cmsc754/Lects/lect04-intersection.pdf</a
+						>
+					</li>
+				</ul>
+				<p id="69e6aa59-6beb-4ce2-a797-c20675991735" class=""></p>
+			</div>
+		</article>
+	</body>
+</html>

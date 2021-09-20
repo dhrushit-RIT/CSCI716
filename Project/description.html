@@ -1,0 +1,942 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Description</title>
+		<style>
+			/* cspell:disable-file */
+			/* webkit printing magic: print all background colors */
+			html {
+				-webkit-print-color-adjust: exact;
+			}
+			* {
+				box-sizing: border-box;
+				-webkit-print-color-adjust: exact;
+			}
+
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+			}
+			@media only screen {
+				body {
+					margin: 2em auto;
+					max-width: 900px;
+					color: rgb(55, 53, 47);
+				}
+			}
+
+			body {
+				line-height: 1.5;
+				white-space: pre-wrap;
+			}
+
+			a,
+			a.visited {
+				color: inherit;
+				text-decoration: underline;
+			}
+
+			.pdf-relative-link-path {
+				font-size: 80%;
+				color: #444;
+			}
+
+			h1,
+			h2,
+			h3 {
+				letter-spacing: -0.01em;
+				line-height: 1.2;
+				font-weight: 600;
+				margin-bottom: 0;
+			}
+
+			.page-title {
+				font-size: 2.5rem;
+				font-weight: 700;
+				margin-top: 0;
+				margin-bottom: 0.75em;
+			}
+
+			h1 {
+				font-size: 1.875rem;
+				margin-top: 1.875rem;
+			}
+
+			h2 {
+				font-size: 1.5rem;
+				margin-top: 1.5rem;
+			}
+
+			h3 {
+				font-size: 1.25rem;
+				margin-top: 1.25rem;
+			}
+
+			.source {
+				border: 1px solid #ddd;
+				border-radius: 3px;
+				padding: 1.5em;
+				word-break: break-all;
+			}
+
+			.callout {
+				border-radius: 3px;
+				padding: 1rem;
+			}
+
+			figure {
+				margin: 1.25em 0;
+				page-break-inside: avoid;
+			}
+
+			figcaption {
+				opacity: 0.5;
+				font-size: 85%;
+				margin-top: 0.5em;
+			}
+
+			mark {
+				background-color: transparent;
+			}
+
+			.indented {
+				padding-left: 1.5em;
+			}
+
+			hr {
+				background: transparent;
+				display: block;
+				width: 100%;
+				height: 1px;
+				visibility: visible;
+				border: none;
+				border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+			}
+
+			img {
+				max-width: 100%;
+			}
+
+			@media only print {
+				img {
+					max-height: 100vh;
+					object-fit: contain;
+				}
+			}
+
+			@page {
+				margin: 1in;
+			}
+
+			.collection-content {
+				font-size: 0.875rem;
+			}
+
+			.column-list {
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.column {
+				padding: 0 1em;
+			}
+
+			.column:first-child {
+				padding-left: 0;
+			}
+
+			.column:last-child {
+				padding-right: 0;
+			}
+
+			.table_of_contents-item {
+				display: block;
+				font-size: 0.875rem;
+				line-height: 1.3;
+				padding: 0.125rem;
+			}
+
+			.table_of_contents-indent-1 {
+				margin-left: 1.5rem;
+			}
+
+			.table_of_contents-indent-2 {
+				margin-left: 3rem;
+			}
+
+			.table_of_contents-indent-3 {
+				margin-left: 4.5rem;
+			}
+
+			.table_of_contents-link {
+				text-decoration: none;
+				opacity: 0.7;
+				border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+			}
+
+			table,
+			th,
+			td {
+				border: 1px solid rgba(55, 53, 47, 0.09);
+				border-collapse: collapse;
+			}
+
+			table {
+				border-left: none;
+				border-right: none;
+			}
+
+			th,
+			td {
+				font-weight: normal;
+				padding: 0.25em 0.5em;
+				line-height: 1.5;
+				min-height: 1.5em;
+				text-align: left;
+			}
+
+			th {
+				color: rgba(55, 53, 47, 0.6);
+			}
+
+			ol,
+			ul {
+				margin: 0;
+				margin-block-start: 0.6em;
+				margin-block-end: 0.6em;
+			}
+
+			li > ol:first-child,
+			li > ul:first-child {
+				margin-block-start: 0.6em;
+			}
+
+			ul > li {
+				list-style: disc;
+			}
+
+			ul.to-do-list {
+				text-indent: -1.7em;
+			}
+
+			ul.to-do-list > li {
+				list-style: none;
+			}
+
+			.to-do-children-checked {
+				text-decoration: line-through;
+				opacity: 0.375;
+			}
+
+			ul.toggle > li {
+				list-style: none;
+			}
+
+			ul {
+				padding-inline-start: 1.7em;
+			}
+
+			ul > li {
+				padding-left: 0.1em;
+			}
+
+			ol {
+				padding-inline-start: 1.6em;
+			}
+
+			ol > li {
+				padding-left: 0.2em;
+			}
+
+			.mono ol {
+				padding-inline-start: 2em;
+			}
+
+			.mono ol > li {
+				text-indent: -0.4em;
+			}
+
+			.toggle {
+				padding-inline-start: 0em;
+				list-style-type: none;
+			}
+
+			/* Indent toggle children */
+			.toggle > li > details {
+				padding-left: 1.7em;
+			}
+
+			.toggle > li > details > summary {
+				margin-left: -1.1em;
+			}
+
+			.selected-value {
+				display: inline-block;
+				padding: 0 0.5em;
+				background: rgba(206, 205, 202, 0.5);
+				border-radius: 3px;
+				margin-right: 0.5em;
+				margin-top: 0.3em;
+				margin-bottom: 0.3em;
+				white-space: nowrap;
+			}
+
+			.collection-title {
+				display: inline-block;
+				margin-right: 1em;
+			}
+
+			time {
+				opacity: 0.5;
+			}
+
+			.icon {
+				display: inline-block;
+				max-width: 1.2em;
+				max-height: 1.2em;
+				text-decoration: none;
+				vertical-align: text-bottom;
+				margin-right: 0.5em;
+			}
+
+			img.icon {
+				border-radius: 3px;
+			}
+
+			.user-icon {
+				width: 1.5em;
+				height: 1.5em;
+				border-radius: 100%;
+				margin-right: 0.5rem;
+			}
+
+			.user-icon-inner {
+				font-size: 0.8em;
+			}
+
+			.text-icon {
+				border: 1px solid #000;
+				text-align: center;
+			}
+
+			.page-cover-image {
+				display: block;
+				object-fit: cover;
+				width: 100%;
+				height: 30vh;
+			}
+
+			.page-header-icon {
+				font-size: 3rem;
+				margin-bottom: 1rem;
+			}
+
+			.page-header-icon-with-cover {
+				margin-top: -0.72em;
+				margin-left: 0.07em;
+			}
+
+			.page-header-icon img {
+				border-radius: 3px;
+			}
+
+			.link-to-page {
+				margin: 1em 0;
+				padding: 0;
+				border: none;
+				font-weight: 500;
+			}
+
+			p > .user {
+				opacity: 0.5;
+			}
+
+			td > .user,
+			td > time {
+				white-space: nowrap;
+			}
+
+			input[type="checkbox"] {
+				transform: scale(1.5);
+				margin-right: 0.6em;
+				vertical-align: middle;
+			}
+
+			p {
+				margin-top: 0.5em;
+				margin-bottom: 0.5em;
+			}
+
+			.image {
+				border: none;
+				margin: 1.5em 0;
+				padding: 0;
+				border-radius: 0;
+				text-align: center;
+			}
+
+			.code,
+			code {
+				background: rgba(135, 131, 120, 0.15);
+				border-radius: 3px;
+				padding: 0.2em 0.4em;
+				border-radius: 3px;
+				font-size: 85%;
+				tab-size: 2;
+			}
+
+			code {
+				color: #eb5757;
+			}
+
+			.code {
+				padding: 1.5em 1em;
+			}
+
+			.code-wrap {
+				white-space: pre-wrap;
+				word-break: break-all;
+			}
+
+			.code > code {
+				background: none;
+				padding: 0;
+				font-size: 100%;
+				color: inherit;
+			}
+
+			blockquote {
+				font-size: 1.25em;
+				margin: 1em 0;
+				padding-left: 1em;
+				border-left: 3px solid rgb(55, 53, 47);
+			}
+
+			.bookmark {
+				text-decoration: none;
+				max-height: 8em;
+				padding: 0;
+				display: flex;
+				width: 100%;
+				align-items: stretch;
+			}
+
+			.bookmark-title {
+				font-size: 0.85em;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				height: 1.75em;
+				white-space: nowrap;
+			}
+
+			.bookmark-text {
+				display: flex;
+				flex-direction: column;
+			}
+
+			.bookmark-info {
+				flex: 4 1 180px;
+				padding: 12px 14px 14px;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+			}
+
+			.bookmark-image {
+				width: 33%;
+				flex: 1 1 180px;
+				display: block;
+				position: relative;
+				object-fit: cover;
+				border-radius: 1px;
+			}
+
+			.bookmark-description {
+				color: rgba(55, 53, 47, 0.6);
+				font-size: 0.75em;
+				overflow: hidden;
+				max-height: 4.5em;
+				word-break: break-word;
+			}
+
+			.bookmark-href {
+				font-size: 0.75em;
+				margin-top: 0.25em;
+			}
+
+			.sans {
+				font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol";
+			}
+			.code {
+				font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono",
+					"Liberation Mono", Courier, monospace;
+			}
+			.serif {
+				font-family: Lyon-Text, Georgia, ui-serif, serif;
+			}
+			.mono {
+				font-family: iawriter-mono, Nitti, Menlo, Courier, monospace;
+			}
+			.pdf .sans {
+				font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol", "Twemoji", "Noto Color Emoji",
+					"Noto Sans CJK JP";
+			}
+			.pdf:lang(zh-CN) .sans {
+				font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol", "Twemoji", "Noto Color Emoji",
+					"Noto Sans CJK SC";
+			}
+			.pdf:lang(zh-TW) .sans {
+				font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol", "Twemoji", "Noto Color Emoji",
+					"Noto Sans CJK TC";
+			}
+			.pdf:lang(ko-KR) .sans {
+				font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont,
+					"Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif,
+					"Segoe UI Emoji", "Segoe UI Symbol", "Twemoji", "Noto Color Emoji",
+					"Noto Sans CJK KR";
+			}
+			.pdf .code {
+				font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas,
+					"PT Mono", "Liberation Mono", Courier, monospace, "Twemoji",
+					"Noto Color Emoji", "Noto Sans Mono CJK JP";
+			}
+			.pdf:lang(zh-CN) .code {
+				font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas,
+					"PT Mono", "Liberation Mono", Courier, monospace, "Twemoji",
+					"Noto Color Emoji", "Noto Sans Mono CJK SC";
+			}
+			.pdf:lang(zh-TW) .code {
+				font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas,
+					"PT Mono", "Liberation Mono", Courier, monospace, "Twemoji",
+					"Noto Color Emoji", "Noto Sans Mono CJK TC";
+			}
+			.pdf:lang(ko-KR) .code {
+				font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas,
+					"PT Mono", "Liberation Mono", Courier, monospace, "Twemoji",
+					"Noto Color Emoji", "Noto Sans Mono CJK KR";
+			}
+			.pdf .serif {
+				font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, "Twemoji",
+					"Noto Color Emoji", "Noto Serif CJK JP";
+			}
+			.pdf:lang(zh-CN) .serif {
+				font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, "Twemoji",
+					"Noto Color Emoji", "Noto Serif CJK SC";
+			}
+			.pdf:lang(zh-TW) .serif {
+				font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, "Twemoji",
+					"Noto Color Emoji", "Noto Serif CJK TC";
+			}
+			.pdf:lang(ko-KR) .serif {
+				font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, "Twemoji",
+					"Noto Color Emoji", "Noto Serif CJK KR";
+			}
+			.pdf .mono {
+				font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace,
+					"Twemoji", "Noto Color Emoji", "Noto Sans Mono CJK JP";
+			}
+			.pdf:lang(zh-CN) .mono {
+				font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace,
+					"Twemoji", "Noto Color Emoji", "Noto Sans Mono CJK SC";
+			}
+			.pdf:lang(zh-TW) .mono {
+				font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace,
+					"Twemoji", "Noto Color Emoji", "Noto Sans Mono CJK TC";
+			}
+			.pdf:lang(ko-KR) .mono {
+				font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace,
+					"Twemoji", "Noto Color Emoji", "Noto Sans Mono CJK KR";
+			}
+			.highlight-default {
+			}
+			.highlight-gray {
+				color: rgb(155, 154, 151);
+			}
+			.highlight-brown {
+				color: rgb(100, 71, 58);
+			}
+			.highlight-orange {
+				color: rgb(217, 115, 13);
+			}
+			.highlight-yellow {
+				color: rgb(223, 171, 1);
+			}
+			.highlight-teal {
+				color: rgb(15, 123, 108);
+			}
+			.highlight-blue {
+				color: rgb(11, 110, 153);
+			}
+			.highlight-purple {
+				color: rgb(105, 64, 165);
+			}
+			.highlight-pink {
+				color: rgb(173, 26, 114);
+			}
+			.highlight-red {
+				color: rgb(224, 62, 62);
+			}
+			.highlight-gray_background {
+				background: rgb(235, 236, 237);
+			}
+			.highlight-brown_background {
+				background: rgb(233, 229, 227);
+			}
+			.highlight-orange_background {
+				background: rgb(250, 235, 221);
+			}
+			.highlight-yellow_background {
+				background: rgb(251, 243, 219);
+			}
+			.highlight-teal_background {
+				background: rgb(221, 237, 234);
+			}
+			.highlight-blue_background {
+				background: rgb(221, 235, 241);
+			}
+			.highlight-purple_background {
+				background: rgb(234, 228, 242);
+			}
+			.highlight-pink_background {
+				background: rgb(244, 223, 235);
+			}
+			.highlight-red_background {
+				background: rgb(251, 228, 228);
+			}
+			.block-color-default {
+				color: inherit;
+				fill: inherit;
+			}
+			.block-color-gray {
+				color: rgba(55, 53, 47, 0.6);
+				fill: rgba(55, 53, 47, 0.6);
+			}
+			.block-color-brown {
+				color: rgb(100, 71, 58);
+				fill: rgb(100, 71, 58);
+			}
+			.block-color-orange {
+				color: rgb(217, 115, 13);
+				fill: rgb(217, 115, 13);
+			}
+			.block-color-yellow {
+				color: rgb(223, 171, 1);
+				fill: rgb(223, 171, 1);
+			}
+			.block-color-teal {
+				color: rgb(15, 123, 108);
+				fill: rgb(15, 123, 108);
+			}
+			.block-color-blue {
+				color: rgb(11, 110, 153);
+				fill: rgb(11, 110, 153);
+			}
+			.block-color-purple {
+				color: rgb(105, 64, 165);
+				fill: rgb(105, 64, 165);
+			}
+			.block-color-pink {
+				color: rgb(173, 26, 114);
+				fill: rgb(173, 26, 114);
+			}
+			.block-color-red {
+				color: rgb(224, 62, 62);
+				fill: rgb(224, 62, 62);
+			}
+			.block-color-gray_background {
+				background: rgb(235, 236, 237);
+			}
+			.block-color-brown_background {
+				background: rgb(233, 229, 227);
+			}
+			.block-color-orange_background {
+				background: rgb(250, 235, 221);
+			}
+			.block-color-yellow_background {
+				background: rgb(251, 243, 219);
+			}
+			.block-color-teal_background {
+				background: rgb(221, 237, 234);
+			}
+			.block-color-blue_background {
+				background: rgb(221, 235, 241);
+			}
+			.block-color-purple_background {
+				background: rgb(234, 228, 242);
+			}
+			.block-color-pink_background {
+				background: rgb(244, 223, 235);
+			}
+			.block-color-red_background {
+				background: rgb(251, 228, 228);
+			}
+			.select-value-color-default {
+				background-color: rgba(206, 205, 202, 0.5);
+			}
+			.select-value-color-gray {
+				background-color: rgba(155, 154, 151, 0.4);
+			}
+			.select-value-color-brown {
+				background-color: rgba(140, 46, 0, 0.2);
+			}
+			.select-value-color-orange {
+				background-color: rgba(245, 93, 0, 0.2);
+			}
+			.select-value-color-yellow {
+				background-color: rgba(233, 168, 0, 0.2);
+			}
+			.select-value-color-green {
+				background-color: rgba(0, 135, 107, 0.2);
+			}
+			.select-value-color-blue {
+				background-color: rgba(0, 120, 223, 0.2);
+			}
+			.select-value-color-purple {
+				background-color: rgba(103, 36, 222, 0.2);
+			}
+			.select-value-color-pink {
+				background-color: rgba(221, 0, 129, 0.2);
+			}
+			.select-value-color-red {
+				background-color: rgba(255, 0, 26, 0.2);
+			}
+
+			.checkbox {
+				display: inline-flex;
+				vertical-align: text-bottom;
+				width: 16;
+				height: 16;
+				background-size: 16px;
+				margin-left: 2px;
+				margin-right: 5px;
+			}
+
+			.checkbox-on {
+				background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+			}
+
+			.checkbox-off {
+				background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+			}
+		</style>
+	</head>
+	<body>
+		<article id="65bef7c8-e3f7-41a1-8cf7-87de71e0fcd6" class="page sans">
+			<header><h1 class="page-title">Description</h1></header>
+			<div class="page-body">
+				<h2 id="fcd93bae-d600-4077-a566-5374e27d29d3" class="">Brute Force</h2>
+				<p id="0a219b4e-7f4b-4e2a-850e-feb1b20755bf" class="">
+					In the brute force approach, given n line segments, one would pick 2
+					line segments at a time and check if they intersect. Comparing every
+					line segment with the rest of n-1 line segments will take an O(n^2)
+					time to compute all the intersections. The pseudocode for this
+					approach looks like as follows:
+				</p>
+				<pre
+					id="9088ed9d-01a9-44c6-b201-9dd772182526"
+					class="code"
+				><code>for i in range( len(lineSegments) ):
+	for j in range( i + 1, len(lineSegments) ):
+		checkIntersection(lineSegments[i], lineSegments[j])</code></pre>
+				<p id="56c9b9cf-0071-4ab3-bb0c-f6662481f465" class=""></p>
+				<h2 id="ea5ef08c-9437-4288-8be7-f875ea22b3a8" class="">
+					Line sweep approach
+				</h2>
+				<h3 id="ab57846c-8128-4610-86f7-39772af2e012" class="">Assumptions</h3>
+				<p id="d0247477-8d30-4ecb-9a4b-3fadc7a9251a" class="">
+					Before we start implementing the algorithm, we assume a few
+					conditions, which are special cases, to never occur. In that sense,
+					this algorithm is valid in the general scenarios. Therefore, the
+					following scenarios are assumed to never take place:
+				</p>
+				<ol
+					type="1"
+					id="0f7a5975-2445-42fc-84aa-bb971bc33c0f"
+					class="numbered-list"
+					start="1"
+				>
+					<li>
+						No two line segment share more than one point of intersection. In
+						other words, no two line segments are collinear.
+					</li>
+				</ol>
+				<ol
+					type="1"
+					id="a61609df-e329-4a93-b7aa-026082ce661a"
+					class="numbered-list"
+					start="2"
+				>
+					<li>More than two line segments never intersect at a given point.</li>
+				</ol>
+				<ol
+					type="1"
+					id="5335007e-3649-4f1a-89f6-d02d996a4028"
+					class="numbered-list"
+					start="3"
+				>
+					<li>None of the segments are vertical</li>
+				</ol>
+				<p id="d7c220be-7c91-4a46-8a7a-1e4f7bd746f5" class=""></p>
+				<h3 id="e688ffaa-2f3d-43cf-8468-2fe834d797b9" class="">
+					Data Structures
+				</h3>
+				<p id="8affb3c5-cfa9-4bd4-be9d-f51c09ef8881" class="">
+					In this algorithm, we maintain two data structures to find the
+					intersection of a list of n lines segments, namely:
+				</p>
+				<ul id="14aded3d-6157-44a7-b51e-c7b020c81431" class="bulleted-list">
+					<li>
+						Event queue
+						<p id="9265081f-011f-4e8d-98f0-980585fac65e" class="">
+							This is a list of events that are yet to happen. There are three
+							types of events that we are interested in :
+						</p>
+						<ol
+							type="1"
+							id="a5ba31a4-3186-405f-9330-4b5390ad307c"
+							class="numbered-list"
+							start="1"
+						>
+							<li>Line segment starts</li>
+						</ol>
+						<ol
+							type="1"
+							id="3ca6b517-9b22-4a13-a3ea-56910a0e17f1"
+							class="numbered-list"
+							start="2"
+						>
+							<li>Line segment end</li>
+						</ol>
+						<ol
+							type="1"
+							id="f31e8cbe-f6f9-489c-89ac-59b3a77117fe"
+							class="numbered-list"
+							start="3"
+						>
+							<li>Lines intersect</li>
+						</ol>
+						<p id="483d2421-275a-4c98-a18d-8f3962e412f2" class="">
+							At any given point of time, these events are stored in a sorted
+							manner such that they appear in increasing x co-ordinate of the
+							point where they take place.
+						</p>
+					</li>
+				</ul>
+				<ul id="dc574c5b-0a92-4b57-9980-4b7878f72748" class="bulleted-list">
+					<li>
+						Segment List
+						<p id="25ff48c4-04d3-4d8a-a34c-26f0a992d38e" class="">
+							This is a sorted list of line segments. The lines are sorted in
+							order of the y-coordinates at any point of time during the
+							execution of algorithm.
+						</p>
+						<p id="ebc60a80-7a89-4ff3-9890-649e3d659abe" class="">
+							This stores the list of line segments in slope intercept format —
+							(m_i, b_i). The advantage in doing so is that for any point, if we
+							know the value of the x co-ordinate, we can find the corresponding
+							y value at that point. This is important since, in the algorithm,
+							we would sweep across the x axis in an increasing manner and would
+							also need the
+						</p>
+						<p id="ac1a1c02-2764-4c11-abf3-9bcd08207dda" class="">
+							Additionally, while keeping every line segment sorted at every
+							point of time during the execution of the algorithm, this data
+							structure also allows to
+						</p>
+						<ul id="d2b8972b-3075-419f-b1b6-0fd93aa36267" class="bulleted-list">
+							<li>Insert a new segment into the data structure.</li>
+						</ul>
+						<ul id="fdd3a5d2-e047-4acf-a922-4fe177852d5c" class="bulleted-list">
+							<li>Delete a segment from the data structure.</li>
+						</ul>
+						<ul id="5550367f-e033-40e8-a626-3e52e8aaae10" class="bulleted-list">
+							<li>Find the successor of a segment in the data structure.</li>
+						</ul>
+						<ul id="6a9e0dcb-533f-4344-9de1-bb0d313fd6cd" class="bulleted-list">
+							<li>Find the predecessor of a segment in the data structure.</li>
+						</ul>
+						<p id="53c14708-3acc-47bd-afa6-5a9bae2a3760" class="">
+							In order to keep the list sorted and provide the above
+							functionality, it uses a variation of AVL tree.
+						</p>
+					</li>
+				</ul>
+				<p id="e415f341-a2f1-4658-8993-b0da4187b46e" class=""></p>
+				<h3 id="754a4de2-8efc-4345-92fd-1dc65a03804e" class="">
+					Algorithm and Pseudocode
+				</h3>
+				<p id="735664a3-65e0-40c5-bbdb-e1a17dfb94ce" class="">
+					Every line segment is scanned and its &quot;line segment start&quot;
+					and &quot;line segment end&quot; events added to the event list. The
+					event list is then processed until empty.
+				</p>
+				<p id="a0dbde7d-3e78-4f01-abfb-4f6988e44dcc" class="">
+					In order to find the intersection of line segments, we sweep an
+					imaginary vertical line across the x axis. This sweeping is not at
+					each pixel, but rather at the points that come up in the event list.
+					At each point, we analyze the order in which the line segments appear
+					on this imaginary line. It can be observed that only the lines that
+					are adjacent to one another, can ever intersect in the near future.
+					The proof of this can be found in the notes provided in the reference
+					links.
+				</p>
+				<p id="d9dd7fb2-4154-448c-a423-a793d4d1c114" class="">
+					We process the event list as follows. At a point of time when our
+					imaginary line is at X = <em>x,</em> for every line in the segment
+					list, we check — if and when — it intersects with one of its
+					neighbors. If it does intersect, we calculate the x coordinate of that
+					point and add this &quot;intersection&quot; event in the event list at
+					the appropriate position — as the event queue is sorted by x
+					coordinate values.
+				</p>
+				<p id="b592a2fd-308f-4c79-aa6a-0769a98bc8e0" class="">
+					We keep repeating this till all the events are completed and
+				</p>
+				<p id="3f7e1a02-d29f-4d53-901b-15479ced4297" class="">
+					The sweeping line in a way divides the region in three parts, the
+					events that already occurred before that line, the event that occurs
+					when the X = <em>x</em> and the events that are yet to occur and are
+					on the right of the sweep line.
+				</p>
+				<p id="f5e9a78b-64d5-4fd1-bf91-09b6d6547084" class="">
+					The pseudocode for this algorithm, taken from the notes mentioned in
+					the
+					<a
+						href="https://www.cs.cmu.edu/~15451-f17/lectures/lec21-sweepline.pdf"
+						>reference</a
+					>
+					is as follows:
+				</p>
+				<pre
+					id="cbf8358f-06e1-494a-81b4-593d8c993490"
+					class="code"
+				><code>def FindSegmentIntersections(S):
+	create an empty priority queue EQ
+	for each segment S, insert its start and end events into EQ create an empty balanced tree SL
+		while (EQ is not empty)
+			E := deletemin(EQ)
+			if E is start of segment s then
+				insert s into SL
+				CheckForIntersect(EQ, s, successor of s) 
+				CheckForIntersect(EQ, s, predecessor of s)
+			else if E is the end of segment s then 
+				CheckForIntersection (EQ, pred of s, succ of s) delete s from SL
+			else if E is cross event for segments s1 and s2 then 
+				println ”s1 and s2 intersect”
+				remove s1 and s2 from SL
+				re−insert s1 and s2 into SL in the opposite order 
+				CheckForIntersection (EQ, s1, new neighbor of s1) 
+				CheckForIntersection (EQ, s2, new neighbor of s2)</code></pre>
+			</div>
+		</article>
+	</body>
+</html>
