@@ -1,49 +1,10 @@
 import sys
 import math
+import time
 
-
-class Hull():
-    __slots__ = "points"
-
-
-class Point():
-    __slots__ = "x", "y"
-
-    def __init__(self, x, y) -> None:
-        self.x = x
-        self.y = y
-
-    def __str__(self) -> str:
-        return "(" + str(self.x) + ", " + str(self.y) + ")"
-
-    def __eq__(self, o: object) -> bool:
-        return self.x == o.x and self.y == o.y
-
-
-class LineSegment():
-    __slots__ = "point1", "point2", "slope", "length"
-
-    def hasPoint(self, point):
-        return self.point1 == point or self.point2 == point
-
-    def swapPoints(self):
-        self.point1, self.point2 = self.point2, self.point1
-
-    def __init__(self, point1, point2) -> None:
-        self.point1 = point1
-        self.point2 = point2
-        if point2.x != point1.x:
-            self.slope = (point2.y - point1.y) / (point2.x - point1.x)
-        else:
-            self.slope = None
-        self.length = math.sqrt(
-            (point2.y-point1.y)*(point2.y-point1.y) + (point2.x-point1.x)*(point2.x-point1.x))
-
-    def __eq__(self, o: object) -> bool:
-        return (self.point1 == o.point1 and self.point2 == o.point2) or (self.point1 == o.point2 and self.point2 == o.point1)
-
-    def __str__(self) -> str:
-        return "<"+str(self.point1) + "-" + str(self.point2)+">"
+from util import Point
+from util import LineSegment
+from util import plotPointsAndHull
 
 
 def getLowestPoint(points) -> Point:
@@ -232,19 +193,26 @@ def main():
     if len(sys.argv) == 2:
         filename = sys.argv[1]
     points = readFromFile(filename)
-
+    start_time = time.time()
     hull_bruteForce = bruteForce(points)  # all points on one side of the line
-    # printLines(hull_bruteForce, "hull_bruteForce")
+    end_time = time.time()
+    hull_find_time = end_time - start_time
+
+    start_time = time.time()
     nonCollinearLines = deleteCollinearLines(hull_bruteForce)
-    printLines(nonCollinearLines, "nonCollinearLines")
     orderedLines = orderLines(nonCollinearLines)
-    printLines(orderedLines, "orderedLines")
     hullPoints = getPointsFromLines(orderedLines)
-    printPoints(hullPoints)
 
     ccwPoints = makeCounterClockwise(hullPoints)
+    end_time = time.time()
+    post_process_time = end_time-start_time
     printPoints(ccwPoints)
     writeToFile("answer.txt", ccwPoints)
+
+    print("time to find hull:", hull_find_time)
+    print("time to post process(sequence, order etc):", post_process_time)
+
+    plotPointsAndHull(points, ccwPoints)
 
 
 if __name__ == "__main__":
