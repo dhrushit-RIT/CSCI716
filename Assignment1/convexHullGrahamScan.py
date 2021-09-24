@@ -1,14 +1,18 @@
 import time
 import sys
-from convexHullBruteForce import printPoints
 
-import matplotlib.pyplot as plt
-from util import Point
-from util import LineSegment
-from util import plotPointsAndHull
+from util import Point, print_points
+from util import plot_points_and_hull
+from util import read_from_file
+from util import write_to_file
 
 
-def getLowestPoint(points) -> Point:
+def get_lowest_point(points) -> Point:
+    """
+    scans the list of points and returns the point with lowest y value
+    :param points: the points to be considered
+    :return: the point with the lowest y value
+    """
     min_y_point = points[0]
 
     for point in points:
@@ -18,6 +22,11 @@ def getLowestPoint(points) -> Point:
 
 
 def sign(num):
+    """
+    gives the sign of the number
+    :param num: the number whose sign is needed
+    :return: +1 if the number is positive or 0 else -1
+    """
     if num == 0:
         return 0
     elif num < 0:
@@ -26,127 +35,129 @@ def sign(num):
         return 1
 
 
-def readFromFile(filename):
-    with open(filename) as f:
-        numPoints = f.readline()
-        points = []
-        for line in f:
-            line = line.strip()
-            x, y = line.split()
-            points.append(Point(float(x), float(y)))
-    return points
-
-
 def orientation(p, q, r):
+    """
+    gives the orientation of the points going from p to q to r, as determined with right hand thumb rule
+    :param p: first point
+    :param q: second point
+    :param r: third point
+    :return: orientation of p-q-r
+    """
     return q.x * r.y - r.x * q.y - p.x * r.y + p.x * q.y + r.x * p.y - q.x * p.y
 
 
-def findUpperHull(points):
-    upperPoints = []
-    startPoint = points[0]
-    endPoint = points[-1]
-    minY = min(startPoint.y, endPoint.y)
+def find_upper_hull(points):
+    """
+    calculates the points that make the upper hull in the list of points
+    :param points: list of all the points to consider
+    :return: list of points that make the upper hull
+    """
+    upper_points = []
+    start_point = points[0]
+    end_point = points[-1]
+    min_y = min(start_point.y, end_point.y)
     for point in points:
-        if point.y >= minY:
-            upperPoints.append(point)
-    upperHull = []
+        if point.y >= min_y:
+            upper_points.append(point)
+    upper_hull = []
     for i in range(3):
-        if len(upperPoints) > 0:
-            upperHull.append(upperPoints.pop(0))
+        if len(upper_points) > 0:
+            upper_hull.append(upper_points.pop(0))
 
-    if len(upperHull) == 3:
-        for point in upperPoints:
-            while len(upperHull) >= 3 and orientation(upperHull[-3], upperHull[-2], upperHull[-1]) >= 0:
-                upperHull.pop(-2)
-            upperHull.append(point)
-        while len(upperHull) >= 3 and orientation(upperHull[-3], upperHull[-2], upperHull[-1]) >= 0:
-            upperHull.pop(-2)
+    if len(upper_hull) == 3:
+        for point in upper_points:
+            while len(upper_hull) >= 3 and orientation(upper_hull[-3], upper_hull[-2], upper_hull[-1]) >= 0:
+                upper_hull.pop(-2)
+            upper_hull.append(point)
+        while len(upper_hull) >= 3 and orientation(upper_hull[-3], upper_hull[-2], upper_hull[-1]) >= 0:
+            upper_hull.pop(-2)
 
-    return upperHull
+    return upper_hull
 
 
-def findLowerHull(points):
-    lowerPoints = []
-    startPoint = points[0]
-    endPoint = points[-1]
-    minY = max(startPoint.y, endPoint.y)
+def find_lower_hull(points):
+    """
+    calculates the points that make the lower hull in the list of points
+    :param points: list of all the points to consider
+    :return: list of points that make the upper hull
+    """
+    lower_points = []
+    start_point = points[0]
+    end_point = points[-1]
+    min_y = max(start_point.y, end_point.y)
     for point in points:
-        if point.y <= minY:
-            lowerPoints.append(point)
-    lowerHull = []
+        if point.y <= min_y:
+            lower_points.append(point)
+    lower_hull = []
     for i in range(3):
-        if len(lowerPoints) > 0:
-            lowerHull.append(lowerPoints.pop(0))
+        if len(lower_points) > 0:
+            lower_hull.append(lower_points.pop(0))
 
-    if len(lowerHull) == 3:
-        for point in lowerPoints:
-            while len(lowerHull) >= 3 and orientation(lowerHull[-3], lowerHull[-2], lowerHull[-1]) <= 0:
-                lowerHull.pop(-2)
-            lowerHull.append(point)
-        while len(lowerHull) >= 3 and orientation(lowerHull[-3], lowerHull[-2], lowerHull[-1]) <= 0:
-            lowerHull.pop(-2)
+    if len(lower_hull) == 3:
+        for point in lower_points:
+            while len(lower_hull) >= 3 and orientation(lower_hull[-3], lower_hull[-2], lower_hull[-1]) <= 0:
+                lower_hull.pop(-2)
+            lower_hull.append(point)
+        while len(lower_hull) >= 3 and orientation(lower_hull[-3], lower_hull[-2], lower_hull[-1]) <= 0:
+            lower_hull.pop(-2)
 
-    return lowerHull
-
-
-def printPoints(points):
-    for point in points:
-        print(point, end=" ")
-    print()
+    return lower_hull
 
 
-def printLines(lines):
-    for line in lines:
-        print(line)
-    print()
+def merge_hulls(lower_hull, upper_hull):
+    """
+    merges the lower hull with the upper hull and gives the list of resultant hull points
+    :param lower_hull: points that make the lower hull
+    :param upper_hull: points that make the upper hull
+    :return: the points that make the combined hull
+    """
+    final_hull = lower_hull
+    for point in reversed(upper_hull[1:-1]):
+        final_hull.append(point)
+    return final_hull
 
 
-def mergeHulls(lowerHull, upperHull):
-    finalHull = lowerHull
-    for point in reversed(upperHull[1:-1]):
-        finalHull.append(point)
-    return finalHull
-
-
-def grahamScan(points):
+def graham_scan(points):
+    """
+    applies the graham scan algorithm to find the hull of the list of points
+    :param points: points for which we need to find the convex hull
+    :return: the list of points that makes up the convex hull
+    """
     points = sorted(points, key=lambda point: point.x)
 
-    upperHull = findUpperHull(points)
-    # printPoints(upperHull)
-    lowerHull = findLowerHull(points)
-    # printPoints(lowerHull)
-    finalHull = mergeHulls(lowerHull, upperHull)
-    printPoints(finalHull)
-    return finalHull
-
-
-def divideConquerHull(points):
-    pass
-
-
-def writeToFile(filename, points):
-    with open(filename, 'w') as f:
-        f.write("number of points in the hull: "+str(len(points)) + "\n")
-        for point in points:
-            f.write(str(point) + "\n")
+    upper_hull = find_upper_hull(points)
+    lower_hull = find_lower_hull(points)
+    final_hull = merge_hulls(lower_hull, upper_hull)
+    print_points(final_hull)
+    return final_hull
 
 
 def main():
-    filename = "points.txt"
-    # filename = input("Enter name of the file:")
+    """
+    the driver function. it uses the file name for the list of points from the terminal.
+    if not provided then it uses the points.txt as the default file
+    :return:
+    """
+    filename = "points.txt" # default file to use
+
+    # use this file if the file name is provided
     if len(sys.argv) == 2:
         filename = sys.argv[1]
-    points = readFromFile(filename)
-    start_time = time.time()
-    hull_grahamScan = grahamScan(points)
-    end_time = time.time()
-    hull_find_time = end_time-start_time
+    points = read_from_file(filename)
 
-    writeToFile("answer.txt", hull_grahamScan)
+    # run and time the graham scan algorithm
+    start_time = time.time()
+    hull_graham_scan = graham_scan(points)
+    end_time = time.time()
+    hull_find_time = end_time - start_time
+
+    # write the hull points to the file answer.txt
+    write_to_file("answer.txt", hull_graham_scan)
 
     print("hull find time:", hull_find_time)
 
-    plotPointsAndHull(points, hull_grahamScan)
+    # plot the final hull and the points
+    plot_points_and_hull(points, hull_graham_scan)
 
 
 if __name__ == "__main__":
