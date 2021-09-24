@@ -42,6 +42,9 @@ def find_upper_hull(points):
     start_point = points[0]
     end_point = points[-1]
     min_y = min(start_point.y, end_point.y)
+
+    # points below the min y of the two extremes do not matter
+    # therefore filter them out
     for point in points:
         if point.y >= min_y:
             upper_points.append(point)
@@ -71,9 +74,13 @@ def find_lower_hull(points):
     start_point = points[0]
     end_point = points[-1]
     min_y = max(start_point.y, end_point.y)
+
+    # points above the max y of the two extremes do not matter
+    # therefore filter them out
     for point in points:
         if point.y <= min_y:
             lower_points.append(point)
+
     lower_hull = []
     for i in range(3):
         if len(lower_points) > 0:
