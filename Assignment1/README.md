@@ -16,3 +16,5 @@ In order to run one of the files, use the following command template:
 
 You can replace the convexHullGrahamScan with convexHullBruteForce and put one of the other test files from the test folder.
 
+### Dependencies:
+The program also additionally uses the matplotlib in order to plot the values on a graph
