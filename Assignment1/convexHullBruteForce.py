@@ -1,29 +1,31 @@
 import sys
 import time
 
-from util import LineSegment, print_points
+from util import LineSegment, print_points, sign
 from util import plot_points_and_hull
 from util import read_from_file
 
 
-def sign(num):
-    if num == 0:
-        return 0
-    elif num < 0:
-        return -1
-    else:
-        return 1
-
-
-def all_points_on_one_side(point1, point2, points):
-    # Line : y = mx + b
+def all_points_on_one_side(point1, point2, points) -> bool:
+    """
+    # Line : y = mx + b is considered
     # y - mx - b = 0 for all points on this line
     # y - mx - b < 0 for points on left
     # y - mx - b > 0 for points on right
+
+    :param point1: point 1 that makes up the line
+    :param point2: point 2 that makes up the line
+    :param points: list of points whose side is being decided
+    :return: True if all the points are on the same side otherwise False
+    """
+
+    # find the slope
     if point2.x != point1.x:
         slope = (point2.y - point1.y) / (point2.x - point1.x)
     else:
-        slope = None
+        slope = None  # undefined slope is treated as None
+
+    # find the y-intercept
     if slope is not None:
         y_intercept = point1.y - slope * point1.x
     else:
@@ -31,6 +33,7 @@ def all_points_on_one_side(point1, point2, points):
 
     side = 0
 
+    # check if all points are on the same side of the line
     for point in points:  # O(n)
         if point != point1 and point != point2:
             if slope is not None:
@@ -53,7 +56,12 @@ def all_points_on_one_side(point1, point2, points):
     return True
 
 
-def brute_force(points):
+def brute_force(points) -> LineSegment[]:
+    """
+    applies the brute force algorithm to find the convex hull
+    :param points: list of points whose convex hull is being found
+    :return: list of lines that make up the hull
+    """
     print("finding answer to life universe and everything")
     hull_lines = []
     for point1 in points:
@@ -71,7 +79,12 @@ def brute_force(points):
     return hull_lines
 
 
-def order_lines(lines):
+def order_lines(lines) -> LineSegment[]:
+    """
+    reorders the lines so that each segment is next to the on in previous index and before the line segment in next index
+    :param lines: list of lines that need to be ordered
+    :return: ordered list of lines
+    """
     print("ordering lines:")
     sequenced_lines = [lines[0]]
     first_line = lines[0]
@@ -96,7 +109,9 @@ def order_lines(lines):
 
 def get_points_from_lines(lines):
     """
-        pre: the lines are ordered in a sequence and lines has at least 3 points
+    pre: the lines are ordered in a sequence and there are at least 3 lines
+    :param lines: list of lines to get the points form
+    :return: ordered list of lines
     """
     print("fetching points from the lines")
     points = []
@@ -116,6 +131,11 @@ def get_points_from_lines(lines):
 
 
 def delete_collinear_lines(lines):
+    """
+    removes the lines that are collinear and are shorter O(h)
+    :param lines: list of lines that make up the hull
+    :return: the list of lines that are not collinear and also still makes up the hull
+    """
     print("deleting collinear lines")
     lines_to_remove = []
     for line1 in lines:
@@ -133,34 +153,37 @@ def delete_collinear_lines(lines):
     return lines
 
 
-def write_to_file(filename, points):
-    print("writing to file")
-    with open(filename, 'w') as f:
-        f.write(str(len(points)) + "\n")
-        for point in points:
-            f.write(str(point) + "\n")
-
-
 def orientation(p, q, r):
     return q.x * r.y - r.x * q.y - p.x * r.y + p.x * q.y + r.x * p.y - q.x * p.y
 
 
 def make_counter_clockwise(points):
+    """
+    if the orientation of the points is not correct, then reverses the order of occurrence of points
+    :param points:
+    :return:
+    """
     if orientation(points[0], points[1], points[2]) < 0:
         points.reverse()
     return points
 
 
 def main():
+    """
+    driver function to handle command line and produce thr graham svan algorithm
+    :return:
+    """
     filename = "points.txt"
     if len(sys.argv) == 2:
         filename = sys.argv[1]
     points = read_from_file(filename)
+
     start_time = time.time()
     hull_brute_force = brute_force(points)  # all points on one side of the line
     end_time = time.time()
     hull_find_time = end_time - start_time
 
+    # from the hull points, order and sort them
     start_time = time.time()
     non_collinear_lines = delete_collinear_lines(hull_brute_force)
     ordered_lines = order_lines(non_collinear_lines)
@@ -170,6 +193,8 @@ def main():
     end_time = time.time()
     post_process_time = end_time - start_time
     print_points(ccw_points)
+
+    # write the points to file
     write_to_file("answer.txt", ccw_points)
 
     print("time to find hull:", hull_find_time)

@@ -21,20 +21,6 @@ def get_lowest_point(points) -> Point:
     return min_y_point
 
 
-def sign(num):
-    """
-    gives the sign of the number
-    :param num: the number whose sign is needed
-    :return: +1 if the number is positive or 0 else -1
-    """
-    if num == 0:
-        return 0
-    elif num < 0:
-        return -1
-    else:
-        return 1
-
-
 def orientation(p, q, r):
     """
     gives the orientation of the points going from p to q to r, as determined with right hand thumb rule
