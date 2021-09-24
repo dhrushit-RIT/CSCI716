@@ -1,7 +1,7 @@
 import sys
 import time
 
-from util import LineSegment, print_points, sign
+from util import LineSegment, print_points, sign, write_to_file
 from util import plot_points_and_hull
 from util import read_from_file
 
@@ -56,7 +56,7 @@ def all_points_on_one_side(point1, point2, points) -> bool:
     return True
 
 
-def brute_force(points) -> LineSegment[]:
+def brute_force(points):
     """
     applies the brute force algorithm to find the convex hull
     :param points: list of points whose convex hull is being found
@@ -79,7 +79,7 @@ def brute_force(points) -> LineSegment[]:
     return hull_lines
 
 
-def order_lines(lines) -> LineSegment[]:
+def order_lines(lines):
     """
     reorders the lines so that each segment is next to the on in previous index and before the line segment in next index
     :param lines: list of lines that need to be ordered

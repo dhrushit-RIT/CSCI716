@@ -124,7 +124,7 @@ def main():
     if not provided then it uses the points.txt as the default file
     :return:
     """
-    filename = "points.txt" # default file to use
+    filename = "points.txt"  # default file to use
 
     # use this file if the file name is provided
     if len(sys.argv) == 2:
