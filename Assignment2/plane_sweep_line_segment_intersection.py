@@ -5,6 +5,9 @@ implements the place sweep algorithm for line intersection
 
 This algorithm finds the intersection points of line segments that are non-vertical
 
+It is assumed that the lines are not vertical
+It is assumed that more than two lines do not intersect at the same point
+
 Author: Dhrushit Raval <dr9703@rit.edu>
 """
 
