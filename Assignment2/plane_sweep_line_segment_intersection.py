@@ -17,9 +17,14 @@ from pytreemap import TreeSet
 import sys
 import matplotlib.pyplot as plt
 
-
 # set this to false if you want to show the plot
 SAVE_TO_FILE = True
+DEBUG_MODE = False
+
+
+def print_if_debug(value):
+    if DEBUG_MODE:
+        print(value)
 
 
 class EventType(Enum):
@@ -61,7 +66,7 @@ class LineSegment:
     y_intercept : y_intercept of the line
     curr_y : value of the y coordinate for the current value of x in the sweep line status
     """
-    __slots__ = "name", "point1", "point2", "slope", "y_intercept", "curr_y"
+    __slots__ = "name", "point1", "point2", "slope", "y_intercept", "curr_y", "prev_y"
 
     def __init__(self, point1, point2, name="") -> None:
         self.point1 = point1
@@ -77,6 +82,7 @@ class LineSegment:
             self.slope = None
 
         self.curr_y = None
+        self.prev_y = None
 
         self.name = name
 
@@ -89,16 +95,35 @@ class LineSegment:
                            ((point2.y - point1.y) / (point2.x - point1.x)) * point1.x
 
     def get_points(self) -> List[Point]:
+        """
+        gives the value of points making up the line segment
+        :return: list of points
+        """
         return [self.point1, self.point2]
 
     def set_curr_y(self, x):
+        """
+        sets the value of current y in the line segment
+        :param x:
+        :return: None
+        """
+        self.prev_y = self.curr_y
         self.curr_y = self.slope * x + self.y_intercept
 
     def get_curr_y(self, x):
-        self.curr_y = self.slope * x + self.y_intercept
+        """
+        gives the value of current y stored in the self
+        :param x:
+        :return: self.curr_y
+        """
         return self.curr_y
 
     def get_other_point(self, point: Point):
+        """
+        gets the other point that make up the line segment
+        :param point:
+        :return: other point
+        """
         if point == self.point1:
             return self.point2
         else:
@@ -123,6 +148,11 @@ class Event:
         self.lines = None
 
     def set_event_lines(self, lines: List[LineSegment]):
+        """
+        sets the list "lines" when the event is intersection
+        :param lines:
+        :return:
+        """
         if self.event_type == EventType.INTERSECTION:
             if not self.lines:
                 self.lines = lines
@@ -131,7 +161,15 @@ class Event:
             self.lines.sort(key=lambda x: x.curr_y)
 
     def __str__(self):
-        return str(self.point) + " " + str(self.event_type) + " " + self.lines
+        s = ""
+        if self.event_type == EventType.START_POINT:
+            s += "S " + str(self.point.line_segment)
+        elif self.event_type == EventType.END_POINT:
+            s += "E " + str(self.point.line_segment)
+        else:
+            s += "I " + str(self.lines[0]) + "-" + str(self.lines[1])
+
+        return s
 
 
 class SweepLineStatus:
@@ -143,7 +181,7 @@ class SweepLineStatus:
     __slots__ = "ordered_BST", "x"
 
     def __str__(self):
-        return str(x) + " " + str(self.ordered_BST)
+        return str(self.x) + " " + str(self.ordered_BST)
 
     def __init__(self, comp) -> None:
         self.ordered_BST = TreeSet(comp)
@@ -209,11 +247,22 @@ def cmp_line(l1: LineSegment, l2: LineSegment):
         return -1
     elif y_1 > y_2:
         return 1
-    else:
+    else:  # if currently its intersecting then the two have same y value
         if l1 == l2:
             return 0
         else:
-            return 1
+            y_1_prev = round(l1.prev_y, 5)
+            y_2_prev = round(l2.prev_y, 5)
+
+            if y_1_prev is not None and y_2_prev is not None:
+                if y_1_prev > y_2_prev:
+                    return -1
+                elif y_1_prev < y_2_prev:
+                    return 1
+                else:
+                    return 0
+            else:
+                return 1
 
 
 def read_file() -> List[LineSegment]:
@@ -243,7 +292,6 @@ def read_file() -> List[LineSegment]:
 
 
 def check_if_intersecting_in_range(l1: LineSegment, l2: LineSegment):
-
     """
     checks if the line segments intersect within a given set of conditions
 
@@ -305,7 +353,107 @@ def check_for_intersection(event_queue: TreeSet, l1: LineSegment, l2: LineSegmen
                                        key=lambda x: -x.get_curr_y(sweep_line_status.x))
             intersection_event.set_event_lines(lines_sorted_by_y)
             if not event_queue.contains(intersection_event):
+                if DEBUG_MODE:
+                    print("intersection event added to queue for", lines_sorted_by_y[0].name, "and",
+                          lines_sorted_by_y[1].name)
                 event_queue.add(intersection_event)
+
+
+def handle_start(event: Event, sweep_line_status: SweepLineStatus, event_queue: TreeSet):
+    """
+    handles the processing of event if the event is start point of the line segment
+    :param event: the current event object
+    :param sweep_line_status: sweep line status object
+    :param event_queue: event queue object
+    :return: None
+    """
+    # add to sweep line status
+    if DEBUG_MODE:
+        print("START POINT for line", event.point.line_segment.name)
+        print("adding " + event.point.line_segment.name + " to the sweep status")
+    sweep_line_status.ordered_BST.add(event.point.line_segment)
+    if DEBUG_MODE:
+        print(sweep_line_status)
+    # check if it intersects with successor
+    successor_line = sweep_line_status.ordered_BST.higher(
+        event.point.line_segment)
+    if successor_line:
+        check_for_intersection(
+            event_queue, event.point.line_segment, successor_line, sweep_line_status)
+    # check if it intersects with predecessor
+    predecessor_line = sweep_line_status.ordered_BST.lower(
+        event.point.line_segment)
+    if predecessor_line:
+        check_for_intersection(
+            event_queue, event.point.line_segment, predecessor_line, sweep_line_status)
+
+
+def handle_end(event: Event, sweep_line_status: SweepLineStatus, event_queue: TreeSet):
+    """
+    handles the processing of event if the event is end point of the line segment
+    :param event: the current event object
+    :param sweep_line_status: sweep line status object
+    :param event_queue: event queue object
+    :return: None
+    """
+    line_to_remove = event.point.line_segment
+    if DEBUG_MODE:
+        print("END POINT for line", line_to_remove.name)
+
+    # find the line segments prior and after the line to remove
+    predecessor_line = sweep_line_status.ordered_BST.lower(line_to_remove)
+    successor_line = sweep_line_status.ordered_BST.higher(line_to_remove)
+
+    # remove the line from the sweep line status
+    if DEBUG_MODE:
+        print("remove " + event.point.line_segment.name + " from the sweep status")
+    sweep_line_status.ordered_BST.remove(line_to_remove)
+    if DEBUG_MODE:
+        print(sweep_line_status)
+    # check for the intersection of the lines that are now adjacent
+    if predecessor_line and successor_line:
+        check_for_intersection(
+            event_queue, predecessor_line, successor_line, sweep_line_status)
+
+
+def handle_intersection(event: Event, sweep_line_status: SweepLineStatus, event_queue: TreeSet,
+                        line_intersections: Set[Point]):
+    """
+    handles the processing of event if the event is intersection of points of two line segments
+    :param event: the current event object
+    :param sweep_line_status: sweep line status object
+    :param event_queue: event queue object
+    :param line_intersections: intersection points so far found
+    :return: None
+    """
+    l0: LineSegment = event.lines[0]
+    l1: LineSegment = event.lines[1]
+    # l0.name == "line2" and l1.name == "line4" or l0.name == "line4" and l1.name == "line2"
+    if DEBUG_MODE:
+        print("INTERSECTION for " + l0.name + " and " + l1.name)
+        print(sweep_line_status)
+    sweep_line_status.ordered_BST.remove(l0)
+    sweep_line_status.ordered_BST.remove(l1)
+    if DEBUG_MODE:
+        print(sweep_line_status)
+    # l0.set_curr_y(sweep_line_status.x)
+    # l1.set_curr_y(sweep_line_status.x)
+    sweep_line_status.ordered_BST.add(l1)
+    sweep_line_status.ordered_BST.add(l0)
+    if DEBUG_MODE:
+        print(sweep_line_status)
+
+    # remove all the events from the queue
+    # add all of them with the reversed order for the intersection point lines
+    # check if after reversal, there is an intersection
+    new_predecessor_of_l1 = sweep_line_status.ordered_BST.lower(l1)
+    if new_predecessor_of_l1:
+        check_for_intersection(event_queue, l1, new_predecessor_of_l1, sweep_line_status)
+    new_successor_of_l0 = sweep_line_status.ordered_BST.higher(l0)
+    if new_successor_of_l0:
+        check_for_intersection(event_queue, l0, new_successor_of_l0, sweep_line_status)
+
+    line_intersections.add(event.point)
 
 
 def handle_event(event: Event, event_queue: TreeSet, sweep_line_status: SweepLineStatus,
@@ -320,54 +468,16 @@ def handle_event(event: Event, event_queue: TreeSet, sweep_line_status: SweepLin
     :param line_intersections: list of line intersections
     :return: None
     """
+    if DEBUG_MODE:
+        print(str(event))
     if event.event_type == EventType.START_POINT:
-        # add to sweep line status
-        sweep_line_status.ordered_BST.add(event.point.line_segment)
-        # check if it intersects with successor
-        successor_line = sweep_line_status.ordered_BST.higher(
-            event.point.line_segment)
-        if successor_line:
-            check_for_intersection(
-                event_queue, event.point.line_segment, successor_line, sweep_line_status)
-        # check if it intersects with predecessor
-        predecessor_line = sweep_line_status.ordered_BST.lower(
-            event.point.line_segment)
-        if predecessor_line:
-            check_for_intersection(
-                event_queue, event.point.line_segment, predecessor_line, sweep_line_status)
+        handle_start(event, sweep_line_status, event_queue)
 
     elif event.event_type == EventType.END_POINT:
-        line_to_remove = event.point.line_segment
+        handle_end(event, sweep_line_status, event_queue)
 
-        # find the line segments prior and after the line to remove
-        predecessor_line = sweep_line_status.ordered_BST.lower(line_to_remove)
-        successor_line = sweep_line_status.ordered_BST.higher(line_to_remove)
-
-        # remove the line from the sweep line status
-        sweep_line_status.ordered_BST.remove(line_to_remove)
-        # check for the intersection of the lines that are now adjecent
-        if predecessor_line and successor_line:
-            check_for_intersection(
-                event_queue, predecessor_line, successor_line, sweep_line_status)
     else:
-        l0 = event.lines[0]
-        l1 = event.lines[1]
-        sweep_line_status.ordered_BST.remove(l0)
-        sweep_line_status.ordered_BST.remove(l1)
-        sweep_line_status.ordered_BST.add(l1)
-        sweep_line_status.ordered_BST.add(l0)
-
-        # remove all the events from the queue
-        # add all of them with the reversed order for the intersection point lines
-        # check if after reversal, there is an intersection
-        new_predecessor_of_l1 = sweep_line_status.ordered_BST.lower(l1)
-        if new_predecessor_of_l1:
-            check_for_intersection(event_queue, l1, new_predecessor_of_l1, sweep_line_status)
-        new_successor_of_l0 = sweep_line_status.ordered_BST.higher(l0)
-        if new_successor_of_l0:
-            check_for_intersection(event_queue, l0, new_successor_of_l0, sweep_line_status)
-
-        line_intersections.add(event.point)
+        handle_intersection(event, sweep_line_status, event_queue, line_intersections)
 
 
 def cmp_points_tuples(t1: Tuple[Point, LineSegment, LineSegment], t2: Tuple[Point, LineSegment, LineSegment]):
@@ -425,13 +535,17 @@ def find_intersections(line_segments: List[LineSegment]):
         event_queue.add(Event(points[1], EventType.END_POINT))
 
     while not event_queue.is_empty():
+        if DEBUG_MODE:
+            print("[ ", end="")
+        if DEBUG_MODE:
+            for event in event_queue: print(event, end=", ")
+        if DEBUG_MODE:
+            print(" ]", end="")
         event: Event = event_queue.poll_first()
+        # if event.event_type != EventType.INTERSECTION:
         sweep_line_status.set_status(event.point.x)
         update_all_lines(line_segments, sweep_line_status)
         handle_event(event, event_queue, sweep_line_status, line_intersections)
-        for point in line_intersections:
-            print(point, end=" ")
-        print()
     return line_intersections
 
 
@@ -454,7 +568,8 @@ def find_intersections_brute_force(line_segments):
     for intersection in intersections:
         line_intersections.add(intersection)
     for point in line_intersections:
-        print(point[0], point[1], point[2])
+        if DEBUG_MODE:
+            print(point[0], point[1], point[2])
 
 
 def plot_lines_and_intersections(line_segments: List[LineSegment], intersections: List[Point]):
@@ -489,7 +604,10 @@ def main():
     line_segments = read_file()
     intersections = find_intersections(line_segments)
     # find_intersections_brute_force(line_segments)
-
+    print("intersection points:")
+    for point in intersections:
+        print(point)
+    print()
     plot_lines_and_intersections(line_segments, intersections)
 
 
