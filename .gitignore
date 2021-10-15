@@ -1,3 +1,4 @@
 node_modules
 Submissions
 *.zip
+.DS_Store
