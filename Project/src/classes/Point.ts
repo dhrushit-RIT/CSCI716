@@ -1,4 +1,4 @@
-class Point {
+export class Point {
 	private x: number;
 	private y: number;
 	private pointType: EventType;
@@ -29,7 +29,7 @@ class Point {
 		return this.lineSegment;
 	}
 
-	set_segment(line: LineSegment) {
+	set Segment(line: LineSegment) {
 		this.lineSegment = line;
 	}
 

@@ -1,4 +1,9 @@
-import { TreeSet } from 'jstreemap';
+import { TreeSet } from "./../../node_modules/jstreemap";
+import { SweepLineStatus } from "./SweepLineStatus";
+import { Point } from "./Point";
+import { EventType } from "./EventType";
+import { LineSegment } from "./LineSegment";
+import { MyEvent } from "./MyEvent";
 
 function cmp_event(e1: MyEvent, e2: MyEvent) {
 	// """
@@ -79,7 +84,10 @@ function cmp_line(l1: LineSegment, l2: LineSegment) {
 	}
 }
 
-function check_if_intersecting_in_range(l1: LineSegment, l2: LineSegment) {
+function check_if_intersecting_in_range(
+	l1: LineSegment,
+	l2: LineSegment
+): [boolean, Point | null] {
 	// """
 	// checks if the line segments intersect within a given set of conditions
 
@@ -150,7 +158,7 @@ function check_for_intersection(
 		check_if_intersecting_in_range(l1, l2);
 
 	if (intersecting_in_range) {
-		if (intersection_point.x > sweep_line_status.x) {
+		if (intersection_point.X > sweep_line_status.X) {
 			let intersection_event = new MyEvent(
 				intersection_point,
 				EventType.INTERSECTION
@@ -159,7 +167,7 @@ function check_for_intersection(
 			// # check for the sequence of lines and then add
 			let lines_sorted_by_y = [l1, l2].sort((a, b) => b.CurrY - a.CurrY);
 			intersection_event.set_event_lines(lines_sorted_by_y);
-			if (!event_queue.contains(intersection_event)) {
+			if (!event_queue.has(intersection_event)) {
 				// if (DEBUG_MODE)
 				// 	print("intersection event added to queue for", lines_sorted_by_y[0].name, "and",lines_sorted_by_y[1].name)
 				event_queue.add(intersection_event);
@@ -188,9 +196,9 @@ function handle_start(
 	// if DEBUG_MODE:
 	//     print(sweep_line_status)
 	// # check if it intersects with successor
-	let successor_line = sweep_line_status.OrderedBST.higher(
-		event.Point.LineSegment
-	);
+	const next_itr = sweep_line_status.OrderedBST.find(event.Point.LineSegment);
+	next_itr.next();
+	let successor_line = next_itr.key;
 	if (successor_line)
 		check_for_intersection(
 			event_queue,
@@ -199,9 +207,9 @@ function handle_start(
 			sweep_line_status
 		);
 	// # check if it intersects with predecessor
-	let predecessor_line = sweep_line_status.OrderedBST.lower(
-		event.Point.LineSegment
-	);
+	const prev_itr = sweep_line_status.OrderedBST.find(event.Point.LineSegment);
+	prev_itr.prev();
+	let predecessor_line = prev_itr.key;
 	if (predecessor_line)
 		check_for_intersection(
 			event_queue,
@@ -228,13 +236,17 @@ function handle_end(
 	//     print("END POINT for line", line_to_remove.name)
 
 	// # find the line segments prior and after the line to remove
-	let predecessor_line = sweep_line_status.OrderedBST.lower(line_to_remove);
-	let successor_line = sweep_line_status.OrderedBST.higher(line_to_remove);
+	const prev_itr = sweep_line_status.OrderedBST.find(line_to_remove);
+	prev_itr.prev();
+	let predecessor_line = prev_itr.key;
+	const next_itr = sweep_line_status.OrderedBST.find(line_to_remove);
+	next_itr.next();
+	let successor_line = next_itr.key;
 
 	// # remove the line from the sweep line status
 	// if DEBUG_MODE:
 	//     print("remove " + event.point.line_segment.name + " from the sweep status")
-	sweep_line_status.OrderedBST.remove(line_to_remove);
+	sweep_line_status.OrderedBST.delete(line_to_remove);
 	// if DEBUG_MODE:
 	//     print(sweep_line_status)
 	// # check for the intersection of the lines that are now adjacent
@@ -251,7 +263,7 @@ function handle_intersection(
 	event: MyEvent,
 	sweep_line_status: SweepLineStatus,
 	event_queue: TreeSet<MyEvent>,
-	line_intersections: Set<Point>
+	line_intersections: TreeSet<Point>
 ) {
 	// """
 	// handles the processing of event if the event is intersection of points of two line segments
@@ -267,8 +279,8 @@ function handle_intersection(
 	// if DEBUG_MODE:
 	// print("INTERSECTION for " + l0.name + " and " + l1.name)
 	// print(sweep_line_status)
-	sweep_line_status.OrderedBST.remove(l0);
-	sweep_line_status.OrderedBST.remove(l1);
+	sweep_line_status.OrderedBST.delete(l0);
+	sweep_line_status.OrderedBST.delete(l1);
 	// if DEBUG_MODE:
 	// print(sweep_line_status)
 	// # l0.set_curr_y(sweep_line_status.x)
@@ -281,7 +293,9 @@ function handle_intersection(
 	// # remove all the events from the queue
 	// # add all of them with the reversed order for the intersection point lines
 	// # check if after reversal, there is an intersection
-	let new_predecessor_of_l1 = sweep_line_status.OrderedBST.lower(l1);
+	const prev_itr = sweep_line_status.OrderedBST.find(l1);
+	prev_itr.prev();
+	let new_predecessor_of_l1 = prev_itr.key;
 	if (new_predecessor_of_l1)
 		check_for_intersection(
 			event_queue,
@@ -289,7 +303,9 @@ function handle_intersection(
 			new_predecessor_of_l1,
 			sweep_line_status
 		);
-	let new_successor_of_l0 = sweep_line_status.OrderedBST.higher(l0);
+	const next_itr = sweep_line_status.OrderedBST.find(l0);
+	next_itr.next();
+	let new_successor_of_l0 = next_itr.key;
 	if (new_successor_of_l0)
 		check_for_intersection(
 			event_queue,
@@ -305,7 +321,7 @@ function handle_event(
 	event: MyEvent,
 	event_queue: TreeSet<MyEvent>,
 	sweep_line_status: SweepLineStatus,
-	line_intersections: Set<Point>
+	line_intersections: TreeSet<Point>
 ) {
 	// """
 	// handles the current event
@@ -333,9 +349,9 @@ function handle_event(
 }
 
 function cmp_points_tuples(
-	t1: [Point, LineSegment, LineSegment],
-	t2: [Point, LineSegment, LineSegment]
-) {
+	t1: [Point, string, string],
+	t2: [Point, string, string]
+): 0 | 1 | -1 {
 	// """
 	// comparison function to compare two points from a tuple containing the point and line segments intersecting at that point
 	// :param t1: first tuples
@@ -406,7 +422,10 @@ function find_intersections(line_segments: LineSegment[]) {
 		// for event in event_queue: print(event, end=", ")
 		// if DEBUG_MODE:
 		// print(" ]", end="")
-		let event: MyEvent = event_queue.poll_first();
+		let forward_event_iterator = event_queue.begin();
+		let event: MyEvent = forward_event_iterator.key;
+		event_queue.erase(forward_event_iterator);
+
 		// # if event.event_type != EventType.INTERSECTION:
 		sweep_line_status.set_status(event.Point.X);
 		update_all_lines(line_segments, sweep_line_status);
@@ -415,22 +434,23 @@ function find_intersections(line_segments: LineSegment[]) {
 	return line_intersections;
 }
 
-function find_intersections_brute_force(line_segments) {
+function find_intersections_brute_force(line_segments: LineSegment[]) {
 	// """
 	// finds the intersections between every line using the brute force approach
 	// :param line_segments: list of line segments to find the intersections for
 	// :return: list of line intersections
 	// """
-	let intersections = [];
+	let intersections: [Point, string, string][] = [];
 	for (let l1 of line_segments)
 		for (let l2 of line_segments)
 			if (l1 != l2) {
 				let [intersecting_in_range, intersection_point] =
 					check_if_intersecting_in_range(l1, l2);
 				if (intersecting_in_range)
-					intersections.push([intersection_point, l1.name, l2.name]);
+					intersections.push([intersection_point, l1.Name, l2.Name]);
 			}
-	let line_intersections = new TreeSet(cmp_points_tuples);
+	let line_intersections = new TreeSet<[Point, string, string]>();
+	line_intersections.compareFunc = cmp_points_tuples;
 
 	for (let intersection of intersections) line_intersections.add(intersection);
 	// for (let point of line_intersections)
@@ -438,12 +458,11 @@ function find_intersections_brute_force(line_segments) {
 	//         print(point[0], point[1], point[2])
 }
 
-
-function main(){
-    // """
-    // driver function
-    // :return: None
-    // """
+function main() {
+	// """
+	// driver function
+	// :return: None
+	// """
 	/* 
 		10
 		10 57 79 46
@@ -457,24 +476,70 @@ function main(){
 		81 99 16 98
 		35 78 70 93 
 	*/
-    let line_segments = [
-		new LineSegment(new Point(10, 57, EventType.START_POINT), new Point(79, 46, EventType.END_POINT)),
-		new LineSegment(new Point(12, 32,EventType.START_POINT),new Point( 95 ,19,EventType.END_POINT)),
-		new LineSegment(new Point(44, 8,EventType.START_POINT),new Point( 14 ,70,EventType.END_POINT)),
-		new LineSegment(new Point(97, 74,EventType.START_POINT),new Point( 68 ,17,EventType.END_POINT)),
-		new LineSegment(new Point(43, 25,EventType.START_POINT),new Point( 14 ,65,EventType.END_POINT)),
-		new LineSegment(new Point(61, 11,EventType.START_POINT),new Point( 16 ,6,EventType.END_POINT)),
-		new LineSegment(new Point(26, 94,EventType.START_POINT),new Point( 53 ,31,EventType.END_POINT)),
-		new LineSegment(new Point(100, 53,EventType.START_POINT),new Point( 25 ,21,EventType.END_POINT)),
-		new LineSegment(new Point(81, 99,EventType.START_POINT),new Point( 16 ,98,EventType.END_POINT)),
-		new LineSegment(new Point(35, 78,EventType.START_POINT),new Point( 70 ,93,EventType.END_POINT) ),
-	]
-    let intersections = find_intersections(line_segments)
-    // # find_intersections_brute_force(line_segments)
-    // print("intersection points:")
-    for (const point of intersections)
-        console.log(point)
-    print()
-    // plot_lines_and_intersections(line_segments, intersections)
+	let line_segments = [
+		new LineSegment(
+			new Point(10, 57, EventType.START_POINT),
+			new Point(79, 46, EventType.END_POINT),
+			"line0"
+		),
+		new LineSegment(
+			new Point(12, 32, EventType.START_POINT),
+			new Point(95, 19, EventType.END_POINT),
+			"line1"
+		),
+		new LineSegment(
+			new Point(44, 8, EventType.START_POINT),
+			new Point(14, 70, EventType.END_POINT),
+			"line2"
+		),
+		new LineSegment(
+			new Point(97, 74, EventType.START_POINT),
+			new Point(68, 17, EventType.END_POINT),
+			"line3"
+		),
+		new LineSegment(
+			new Point(43, 25, EventType.START_POINT),
+			new Point(14, 65, EventType.END_POINT),
+			"line4"
+		),
+		new LineSegment(
+			new Point(61, 11, EventType.START_POINT),
+			new Point(16, 6, EventType.END_POINT),
+			"line5"
+		),
+		new LineSegment(
+			new Point(26, 94, EventType.START_POINT),
+			new Point(53, 31, EventType.END_POINT),
+			"line6"
+		),
+		new LineSegment(
+			new Point(100, 53, EventType.START_POINT),
+			new Point(25, 21, EventType.END_POINT),
+			"line7"
+		),
+		new LineSegment(
+			new Point(81, 99, EventType.START_POINT),
+			new Point(16, 98, EventType.END_POINT),
+			"line8"
+		),
+		new LineSegment(
+			new Point(35, 78, EventType.START_POINT),
+			new Point(70, 93, EventType.END_POINT),
+			"line9"
+		),
+	];
 
+	for (let line of line_segments){
+		line.Point1.Segment = line;
+		line.Point2.Segment = line;
+	}
+
+	let intersections = find_intersections(line_segments);
+	// # find_intersections_brute_force(line_segments)
+	// print("intersection points:")
+	for (const point of intersections) console.log(point);
+	print();
+	// plot_lines_and_intersections(line_segments, intersections)
 }
+
+main();

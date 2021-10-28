@@ -1,3 +1,0 @@
-class TreeSet {
-	constructor(comparator) {}
-}

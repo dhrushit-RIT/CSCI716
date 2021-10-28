@@ -1,4 +1,8 @@
-class MyEvent {
+import { EventType } from "./EventType";
+import { LineSegment } from "./LineSegment";
+import { Point } from "./Point";
+
+export class MyEvent {
 	// """
 	// defines the events class
 	// point : the point associated with this event
@@ -7,7 +11,7 @@ class MyEvent {
 	// """
 	private point;
 	private event_type;
-	private lines;
+	private lines:LineSegment[];
 
 	constructor(point: Point, event_type: EventType) {
 		this.point = point;
@@ -21,12 +25,12 @@ class MyEvent {
 		// :param lines:
 		// :return:
 		// """
-		if (self.event_type == EventType.INTERSECTION) {
+		if (this.event_type == EventType.INTERSECTION) {
 			if (!this.lines) {
 				this.lines = lines;
 			} else {
-				this.lines.extend(lines);
-				this.lines.sort((a, b) => (a.curr_y > b.curr_y ? 1 : -1));
+				this.lines.push(...lines);
+				this.lines.sort((a, b) => (a.CurrY > b.CurrY ? 1 : -1));
 			}
 		}
 	}
@@ -46,9 +50,9 @@ class MyEvent {
 	toString() {
 		let s = "";
 		if (this.event_type == EventType.START_POINT) {
-			s += "S " + this.point.line_segment;
+			s += "S " + this.point.LineSegment;
 		} else if (this.event_type == EventType.END_POINT) {
-			s += "E " + this.point.line_segment;
+			s += "E " + this.point.LineSegment;
 		} else {
 			s += "I " + this.lines[0] + "-" + this.lines[1];
 		}

@@ -1,4 +1,6 @@
-class LineSegment {
+import { Point } from "./Point";
+
+export class LineSegment {
 	private name: string;
 	private point1: Point;
 	private point2: Point;
@@ -63,7 +65,7 @@ class LineSegment {
 		this.curr_y = this.slope * x + this.y_intercept;
 	}
 
-	get_curr_y(x) {
+	get_curr_y() {
 		//  """
 		//  gives the value of current y stored in the self
 		//  :param x:
@@ -105,6 +107,11 @@ class LineSegment {
 	get Point2(): Point {
 		return this.point2;
 	}
+
+	get Name(): string {
+		return this.name;
+	}
+
 
 	toString() {
 		return this.name;

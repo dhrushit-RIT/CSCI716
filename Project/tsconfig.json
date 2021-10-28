@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"outDir": "dist",
+		"target": "es2015",
+		"module": "ES6",
+		"moduleResolution": "Node",
+		"esModuleInterop": true,
+		"downlevelIteration": true,
+		"allowSyntheticDefaultImports": true,
+		"importHelpers": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"removeComments": true,
+		"noEmitOnError": true,
+		"strict": false,
+		"alwaysStrict": false,
+		"noImplicitAny": true,
+		"typeRoots": ["node_modules/@types/"],
+		"rootDir": "src",
+		"strictFunctionTypes": true,
+		"paths": { "@node_modules": ["/node_modules/*"] }
+		// "noPropertyAccessFromIndexSignature": true
+	},
+	"include": ["src/**/*.ts", "jstreemap.js", "src/js/SweepLineStatus.js", "src/js/Point.js", "src/js/PlaneSweep.js", "src/js/MyEvent.js"],
+	"exclude": ["node_modules", "dist", "__tests__", "build"]
+}
