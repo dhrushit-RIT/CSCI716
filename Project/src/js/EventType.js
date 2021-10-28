@@ -1,0 +1,5 @@
+EventType = {
+	START_POINT: 0,
+	END_POINT: 1,
+	INTERSECTION: 2,
+};
