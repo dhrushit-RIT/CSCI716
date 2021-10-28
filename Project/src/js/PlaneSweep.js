@@ -319,7 +319,7 @@ function handle_event(
 	// :return: None
 	// """
 	if (DEBUG_MODE)
-	console.log(str(event))
+	console.log(event)
 	if (event.Event_Type == EventType.START_POINT)
 		handle_start(event, sweep_line_status, event_queue);
 	else if (event.Event_Type == EventType.END_POINT)
