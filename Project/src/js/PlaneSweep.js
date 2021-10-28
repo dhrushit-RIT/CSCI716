@@ -178,9 +178,9 @@ function handle_start(event, sweep_line_status, event_queue) {
 	// """
 	// # add to sweep line status
 	if (DEBUG_MODE) {
-		console.log("START POINT for line", event.point.line_segment.name);
+		console.log("START POINT for line", event.point.LineSegment.name);
 		console.log(
-			"adding " + event.point.line_segment.name + " to the sweep status"
+			"adding " + event.point.LineSegment.name + " to the sweep status"
 		);
 	}
 	sweep_line_status.OrderedBST.add(event.Point.LineSegment);
@@ -231,7 +231,7 @@ function handle_end(event, sweep_line_status, event_queue) {
 	// # remove the line from the sweep line status
 	if (DEBUG_MODE)
 		console.log(
-			"remove " + event.point.line_segment.name + " from the sweep status"
+			"remove " + event.point.LineSegment.name + " from the sweep status"
 		);
 	sweep_line_status.OrderedBST.delete(line_to_remove);
 	if (DEBUG_MODE) console.log(sweep_line_status);
