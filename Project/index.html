@@ -21,6 +21,14 @@
 			integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
 			crossorigin="anonymous"
 		></script>
+		<script src="./lib/p5.min.js"></script>
+		<script src="jstreemap.js"></script>
+		<script src="./src/js/EventType.js"></script>
+		<script src="./src/js/MyEvent.js"></script>
+		<script src="./src/js/LineSegment.js"></script>
+		<script src="./src/js/Point.js"></script>
+		<script src="./src/js/SweepLineStatus.js"></script>
+		<script src="./src/js/PlaneSweep.js"></script>
 	</head>
 	<body>
 		<div class="container">
@@ -78,6 +86,18 @@
 						aria-selected="false"
 					>
 						Description
+					</button>
+					<button
+						class="nav-link"
+						id="nav-implementation-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#nav-implementation"
+						type="button"
+						role="tab"
+						aria-controls="nav-implementation"
+						aria-selected="true"
+					>
+						Implementation
 					</button>
 				</div>
 			</nav>
@@ -474,6 +494,25 @@
             CheckForIntersection (EQ, s1, new neighbor of s1) 
             CheckForIntersection (EQ, s2, new neighbor of s2)</code></pre>
 					</div>
+				</div>
+				<div
+					class="tab-pane fade show active"
+					id="nav-implementation"
+					role="tabpanel"
+					aria-labelledby="nav-implementation-tab"
+				>
+					<hr />
+					<br />
+					<h2 id="8adf7062-0b73-43c6-9879-f8451af4b085" class="">
+						Implementation
+					</h2>
+
+					<div id="plot_graph"></div>
+					<div>
+						<p id="intersection_points">Intersection Points:</p>
+					</div> 
+					<button id="calculate" onclick="main()">Find Intersections</button>
+					<button id="showgraph" onclick="showGraph()">Show Graph</button>
 				</div>
 			</div>
 		</div>
