@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 # set this to false if you want to show the plot
 SAVE_TO_FILE = True
-DEBUG_MODE = False
+DEBUG_MODE = True
 
 
 def print_if_debug(value):
