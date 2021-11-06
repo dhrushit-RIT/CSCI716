@@ -5,6 +5,12 @@ from LineSegment import LineSegment
 from Point import Point
 from Trapazoid import Trapazoid
 
+import random
+
+from Tree import Tree
+
+random.seed(259)
+
 
 def read_input():
 
@@ -43,9 +49,31 @@ def read_input():
     return line_segments, bounding_box
 
 
+def createTree(line_segments, bounding_box):
+    temp_line_segments = line_segments[:]
+
+    t = Tree()
+
+    while len(temp_line_segments) > 0:
+        random_line = temp_line_segments.pop(random.randint(
+            0, len(temp_line_segments)-1))
+        # check trapezoids the left end point belongs and add bullets
+        # check trapezoids the right end point belongs and add bullets
+        # find intersecting trapezoids and list them
+        # trim the bullets from intersecting trapezoids by keeping the ones coming from a point and deleting other side
+        # check the bullet trails for left end point and trim
+        # check the bullet trails for right end point and trim
+
+
+
+
+        
+
+
 def main():
     line_segments, bounding_box = read_input()
-    
+    t = createTree(line_segments, bounding_box)
+
 
 if __name__ == "__main__":
     main()
