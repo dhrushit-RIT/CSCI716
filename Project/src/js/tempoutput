@@ -1,0 +1,173 @@
+Input is being redirected from /Users/dhrushitraval/Documents/RIT/Term2/CSCI716/Assignments/Assignment2/datapoints.txt
+[ S line0, S line1, S line4, S line2, S line5, S line8, S line7, S line6, S line9, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line0
+START POINT for line line0
+adding line0 to the sweep status
+10.0 [line0]
+[ S line1, S line4, S line2, S line5, S line8, S line7, S line6, S line9, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line1
+START POINT for line line1
+adding line1 to the sweep status
+12.0 [line1, line0]
+[ S line4, S line2, S line5, S line8, S line7, S line6, S line9, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line4
+START POINT for line line4
+adding line4 to the sweep status
+14.0 [line1, line0, line4]
+intersection event added to queue for line0 and line4
+[ S line2, S line5, S line8, I line0-line4, S line7, S line6, S line9, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line2
+START POINT for line line2
+adding line2 to the sweep status
+14.0 [line1, line0, line4, line2]
+intersection event added to queue for line4 and line2
+[ S line5, S line8, I line0-line4, I line4-line2, S line7, S line6, S line9, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line5
+START POINT for line line5
+adding line5 to the sweep status
+16.0 [line5, line1, line0, line4, line2]
+[ S line8, I line0-line4, I line4-line2, S line7, S line6, S line9, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line8
+START POINT for line line8
+adding line8 to the sweep status
+16.0 [line5, line1, line0, line4, line2, line8]
+[ I line0-line4, I line4-line2, S line7, S line6, S line9, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line0-line4
+INTERSECTION for line0 and line4
+21.080704629250306 [line5, line1, line0, line4, line2, line8]
+21.080704629250306 [line5, line1, line2, line8]
+21.080704629250306 [line5, line1, line4, line0, line2, line8]
+intersection event added to queue for line1 and line4
+intersection event added to queue for line0 and line2
+[ I line0-line2, I line4-line2, S line7, S line6, S line9, I line1-line4, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line0-line2
+INTERSECTION for line0 and line2
+21.150455927051674 [line5, line1, line4, line0, line2, line8]
+21.150455927051674 [line5, line1, line4, line0, line8]
+21.150455927051674 [line5, line1, line4, line2, line0, line8]
+[ I line4-line2, S line7, S line6, S line9, I line1-line4, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line4-line2
+INTERSECTION for line4 and line2
+21.274247491638796 [line5, line1, line4, line2, line0, line8]
+21.274247491638796 [line5, line1, line0, line8]
+21.274247491638796 [line5, line1, line2, line4, line0, line8]
+intersection event added to queue for line1 and line2
+[ S line7, S line6, I line1-line2, S line9, I line1-line4, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line7
+START POINT for line line7
+adding line7 to the sweep status
+25.0 [line5, line7, line1, line2, line4, line0, line8]
+intersection event added to queue for line7 and line1
+[ S line6, I line1-line2, S line9, I line7-line1, I line1-line4, E line4, E line2, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line6
+START POINT for line line6
+adding line6 to the sweep status
+26.0 [line5, line7, line1, line2, line4, line0, line6, line8]
+intersection event added to queue for line0 and line6
+[ I line1-line2, S line9, I line7-line1, I line1-line4, E line4, E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line1-line2
+INTERSECTION for line1 and line2
+34.05887300252313 [line5, line7, line1, line2, line4, line0, line6, line8]
+34.05887300252313 [line5, line7, line4, line0, line6, line8]
+34.05887300252313 [line5, line7, line2, line1, line4, line0, line6, line8]
+intersection event added to queue for line7 and line2
+[ S line9, I line7-line2, I line7-line1, I line1-line4, E line4, E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line9
+START POINT for line line9
+adding line9 to the sweep status
+35.0 [line5, line7, line2, line1, line4, line0, line6, line9, line8]
+[ I line7-line2, I line7-line1, I line1-line4, E line4, E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line7-line2
+INTERSECTION for line7 and line2
+35.53475935828877 [line5, line7, line2, line1, line4, line0, line6, line9, line8]
+35.53475935828877 [line5, line1, line4, line0, line6, line9, line8]
+35.53475935828877 [line5, line2, line7, line1, line4, line0, line6, line9, line8]
+intersection event added to queue for line5 and line2
+[ I line7-line1, I line1-line4, E line4, I line5-line2, E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line7-line1
+INTERSECTION for line7 and line1
+40.36766730928119 [line5, line2, line7, line1, line4, line0, line6, line9, line8]
+40.36766730928119 [line5, line2, line7, line4, line0, line6, line9, line8]
+40.36766730928119 [line5, line2, line1, line7, line4, line0, line6, line9, line8]
+intersection event added to queue for line7 and line4
+[ I line7-line4, I line1-line4, E line4, I line5-line2, E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line7-line4
+INTERSECTION for line7 and line4
+40.962321792260695 [line5, line2, line1, line7, line4, line0, line6, line9, line8]
+40.962321792260695 [line5, line2, line1, line7, line0, line6, line9, line8]
+40.962321792260695 [line5, line2, line1, line4, line7, line0, line6, line9, line8]
+[ I line1-line4, E line4, I line5-line2, E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line1-line4
+INTERSECTION for line1 and line4
+41.246007475365275 [line5, line2, line1, line4, line7, line0, line6, line9, line8]
+41.246007475365275 [line5, line2, line7, line0, line6, line9, line8]
+41.246007475365275 [line5, line2, line4, line1, line7, line0, line6, line9, line8]
+[ E line4, I line5-line2, E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]E line4
+END POINT for line line4
+remove line4 from the sweep status
+43.0 [line5, line2, line1, line7, line0, line6, line9, line8]
+[ I line5-line2, E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line5-line2
+INTERSECTION for line5 and line2
+43.48979591836735 [line5, line2, line1, line7, line0, line6, line9, line8]
+43.48979591836735 [line5, line1, line7, line0, line6, line9, line8]
+43.48979591836735 [line2, line5, line1, line7, line0, line6, line9, line8]
+[ E line2, I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]E line2
+END POINT for line line2
+remove line2 from the sweep status
+44.0 [line5, line1, line7, line0, line6, line9, line8]
+[ I line0-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line0-line6
+INTERSECTION for line0 and line6
+44.193333333333335 [line5, line1, line7, line0, line6, line9, line8]
+44.193333333333335 [line5, line1, line7, line9, line8]
+44.193333333333335 [line5, line1, line7, line6, line0, line9, line8]
+intersection event added to queue for line7 and line6
+[ I line7-line6, E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]I line7-line6
+INTERSECTION for line7 and line6
+52.29468599033817 [line5, line1, line7, line6, line0, line9, line8]
+52.29468599033817 [line5, line1, line0, line9, line8]
+52.29468599033817 [line5, line1, line6, line7, line0, line9, line8]
+[ E line6, E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]E line6
+END POINT for line line6
+remove line6 from the sweep status
+53.0 [line5, line1, line7, line0, line9, line8]
+[ E line5, S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]E line5
+END POINT for line line5
+remove line5 from the sweep status
+61.0 [line1, line7, line0, line9, line8]
+[ S line3, E line9, E line0, E line8, E line1, E line3, E line7,  ]S line3
+START POINT for line line3
+adding line3 to the sweep status
+68.0 [line3, line1, line7, line0, line9, line8]
+intersection event added to queue for line3 and line1
+[ E line9, I line3-line1, E line0, E line8, E line1, E line3, E line7,  ]E line9
+END POINT for line line9
+remove line9 from the sweep status
+70.0 [line3, line1, line7, line0, line8]
+[ I line3-line1, E line0, E line8, E line1, E line3, E line7,  ]I line3-line1
+INTERSECTION for line3 and line1
+70.93519968676586 [line3, line1, line7, line0, line8]
+70.93519968676586 [line3, line7, line0, line8]
+70.93519968676586 [line1, line3, line7, line0, line8]
+intersection event added to queue for line3 and line7
+[ E line0, E line8, I line3-line7, E line1, E line3, E line7,  ]E line0
+END POINT for line line0
+remove line0 from the sweep status
+79.0 [line1, line3, line7, line8]
+[ E line8, I line3-line7, E line1, E line3, E line7,  ]E line8
+END POINT for line line8
+remove line8 from the sweep status
+81.0 [line1, line3, line7]
+[ I line3-line7, E line1, E line3, E line7,  ]I line3-line7
+INTERSECTION for line3 and line7
+82.52166118912459 [line1, line3, line7]
+82.52166118912459 [line1]
+82.52166118912459 [line1, line7, line3]
+[ E line1, E line3, E line7,  ]E line1
+END POINT for line line1
+remove line1 from the sweep status
+95.0 [line7, line3]
+[ E line3, E line7,  ]E line3
+END POINT for line line3
+remove line3 from the sweep status
+97.0 [line7]
+[ E line7,  ]E line7
+END POINT for line line7
+remove line7 from the sweep status
+100.0 []
+intersection points:
+{21.080704629250306, 55.23351085620647}
+{21.150455927051674, 55.22239108409321}
+{21.274247491638796, 54.96655518394649}
+{34.05887300252313, 28.544995794785535}
+{35.53475935828877, 25.494830659536547}
+{40.36766730928119, 27.556871385293306}
+{40.962321792260695, 27.810590631364562}
+{41.246007475365275, 27.419300033978935}
+{43.48979591836735, 9.054421768707485}
+{44.193333333333335, 51.54888888888889}
+{52.29468599033817, 32.645732689210945}
+{70.93519968676586, 22.769185591229444}
+{82.52166118912459, 45.542575440693156}
