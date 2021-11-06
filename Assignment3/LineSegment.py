@@ -1,8 +1,9 @@
 from typing import List
+import Node
 from Point import Point
 
 
-class LineSegment:
+class LineSegment(Node):
     """
     class to represent a line segment
     name: name of the line

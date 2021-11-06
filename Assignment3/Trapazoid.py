@@ -1,3 +1,6 @@
-class Trapazoid:
+import Node
+
+
+class Trapazoid(Node):
 
     pass

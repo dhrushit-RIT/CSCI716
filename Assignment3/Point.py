@@ -1,5 +1,7 @@
 from enum import Enum
 
+import Node
+
 
 class PointType(Enum):
     """
@@ -9,7 +11,7 @@ class PointType(Enum):
     END_POINT = 1
 
 
-class Point:
+class Point(Node):
     """
     defines the point class
     stores the point x and y coordinates and the line segment it belongs to
