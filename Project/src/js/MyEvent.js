@@ -26,8 +26,8 @@ class MyEvent {
 				this.lines = lines;
 			} else {
 				this.lines.push(...lines);
-				this.lines.sort((a, b) => (a.CurrY > b.CurrY ? 1 : -1));
 			}
+			this.lines.sort((a, b) => (a.CurrY > b.CurrY ? 1 : -1));
 		}
 	}
 
