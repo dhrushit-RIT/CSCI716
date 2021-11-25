@@ -1,4 +1,4 @@
-var DEBUG_MODE = true
+var DEBUG_MODE = true;
 
 function cmp_event(e1, e2) {
 	// """
@@ -61,15 +61,15 @@ function cmp_line(l1, l2) {
 	// :param l2: second line segment
 	// :return: 1 if l1's current y coordinate value > l2's. -1 other wise and 0 if both y values are same
 	// """
-	let y_1 = l1.CurrY.toFixed(5);
-	let y_2 = l2.CurrY.toFixed(5);
+	let y_1 = parseFloat(l1.CurrY.toFixed(5));
+	let y_2 = parseFloat(l2.CurrY.toFixed(5));
 	if (y_1 < y_2) return -1;
 	else if (y_1 > y_2) return 1;
 	// # if currently its intersecting then the two have same y value
 	else if (l1 == l2) return 0;
 	else {
-		let y_1_prev = l1.PrevY.toFixed(5);
-		let y_2_prev = l2.PrevY.toFixed(5);
+		let y_1_prev = parseFloat(l1.PrevY.toFixed(5));
+		let y_2_prev = parseFloat(l2.PrevY.toFixed(5));
 
 		if (y_1_prev != null && y_2_prev != null)
 			if (y_1_prev > y_2_prev) return -1;
@@ -184,7 +184,7 @@ function handle_start(event, sweep_line_status, event_queue) {
 		);
 	}
 	sweep_line_status.OrderedBST.add(event.Point.LineSegment);
-	if (DEBUG_MODE) console.log(sweep_line_status);
+	if (DEBUG_MODE) console.log(sweep_line_status.toString());
 	// # check if it intersects with successor
 	const next_itr = sweep_line_status.OrderedBST.find(event.Point.LineSegment);
 	next_itr.next();
@@ -234,7 +234,7 @@ function handle_end(event, sweep_line_status, event_queue) {
 			"remove " + event.point.LineSegment.name + " from the sweep status"
 		);
 	sweep_line_status.OrderedBST.delete(line_to_remove);
-	if (DEBUG_MODE) console.log(sweep_line_status);
+	if (DEBUG_MODE) console.log(sweep_line_status.toString());
 	// # check for the intersection of the lines that are now adjacent
 	if (predecessor_line && successor_line)
 		check_for_intersection(
@@ -264,16 +264,16 @@ function handle_intersection(
 	// # l0.name == "line2" and l1.name == "line4" or l0.name == "line4" and l1.name == "line2"
 	if (DEBUG_MODE) {
 		console.log("INTERSECTION for " + l0.name + " and " + l1.name);
-		console.log(sweep_line_status);
+		console.log(sweep_line_status.toString());
 	}
 	sweep_line_status.OrderedBST.delete(l0);
 	sweep_line_status.OrderedBST.delete(l1);
-	if (DEBUG_MODE) console.log(sweep_line_status);
+	if (DEBUG_MODE) console.log(sweep_line_status.toString());
 	// # l0.set_curr_y(sweep_line_status.x)
 	// # l1.set_curr_y(sweep_line_status.x)
 	sweep_line_status.OrderedBST.add(l1);
 	sweep_line_status.OrderedBST.add(l0);
-	if (DEBUG_MODE) console.log(sweep_line_status);
+	if (DEBUG_MODE) console.log(sweep_line_status.toString());
 
 	// # remove all the events from the queue
 	// # add all of them with the reversed order for the intersection point lines
@@ -318,8 +318,7 @@ function handle_event(
 	// :param line_intersections: list of line intersections
 	// :return: None
 	// """
-	if (DEBUG_MODE)
-	console.log(event)
+	// if (DEBUG_MODE) console.log(event.toString());
 	if (event.Event_Type == EventType.START_POINT)
 		handle_start(event, sweep_line_status, event_queue);
 	else if (event.Event_Type == EventType.END_POINT)
@@ -341,8 +340,8 @@ function cmp_points_tuples(t1, t2) {
 	// :return: 0 if points are the same. 1 if the first tuple is greater than the second -1 if otherwise
 	// """
 	if (
-		t1[0].X.toFixed(5) == t2[0].X.toFixed(5) &&
-		t1[0].Y.toFixed(5) == t2[0].Y.toFixed(5)
+		parseFloat(t1[0].X.toFixed(5)) == parseFloat(t2[0].X.toFixed(5)) &&
+		parseFloat(t1[0].Y.toFixed(5)) == parseFloat(t2[0].Y.toFixed(5))
 	)
 		return 0;
 	else return t1[0].X > t2[0].X ? 1 : -1;
@@ -355,7 +354,7 @@ function cmp_points(p1, p2) {
 	// :param p2: second point
 	// :return: 0 if two points are same upto 5 places after decimal
 	// """
-	if (p1.X.toFixed(5) == p2.X.toFixed(5) && p1.Y.toFixed(5) == p2.Y.toFixed(5))
+	if (parseFloat(p1.X.toFixed(5)) == parseFloat(p2.X.toFixed(5)) && parseFloat(p1.Y.toFixed(5)) == parseFloat(p2.Y.toFixed(5)))
 		return 0;
 	else return p1.X > p2.X ? 1 : -1;
 }
@@ -395,12 +394,14 @@ function find_intersections(line_segments) {
 	}
 
 	while (event_queue.size != 0) {
+		s = "["
+		// if (DEBUG_MODE) console.log("[ ", (end = ""));
 		if (DEBUG_MODE)
-		console.log("[ ", end="")
-		if (DEBUG_MODE)
-		for (let event of event_queue) console.log(event, end=", ")
-		if (DEBUG_MODE)
-		console.log(" ]", end="")
+			for (let event of event_queue)
+				s+=event.toString() + ", "
+				// console.log(event.toString(), (end = ", "));
+		s+=" ]"
+		if (DEBUG_MODE) console.log(s);
 		let forward_event_iterator = event_queue.begin();
 		let event = forward_event_iterator.key;
 		event_queue.erase(forward_event_iterator);
@@ -433,8 +434,7 @@ function find_intersections_brute_force(line_segments) {
 
 	for (let intersection of intersections) line_intersections.add(intersection);
 	for (let point of line_intersections)
-	    if (DEBUG_MODE)
-	        console.log(point[0], point[1], point[2])
+		if (DEBUG_MODE) console.log(point[0], point[1], point[2]);
 }
 
 function main() {
