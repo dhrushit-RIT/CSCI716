@@ -1,5 +1,23 @@
 var DEBUG_MODE = true;
 
+var scaleDownFactor = 0.8;
+
+var myp5;
+var intersectionPoints = [];
+var svgsl;
+var svgeq;
+var sweepline_x = 0;
+
+var highlightLine = new LineSegment(
+	new Point(0, 0, "highlightLine"),
+	new Point(0, 0, "highlightLine")
+);
+
+var event_point = new Point(0, 0, null);
+
+var event_queue_history = [];
+var sweep_line_status_history = [];
+
 function cmp_event(e1, e2) {
 	// """
 	// comparison function to compare two events
@@ -300,6 +318,8 @@ function handle_intersection(
 		);
 
 	line_intersections.add(event.Point);
+	intersectionPoints.push(event.Point);
+	myp5.draw();
 }
 
 function handle_event(
@@ -354,7 +374,10 @@ function cmp_points(p1, p2) {
 	// :param p2: second point
 	// :return: 0 if two points are same upto 5 places after decimal
 	// """
-	if (parseFloat(p1.X.toFixed(5)) == parseFloat(p2.X.toFixed(5)) && parseFloat(p1.Y.toFixed(5)) == parseFloat(p2.Y.toFixed(5)))
+	if (
+		parseFloat(p1.X.toFixed(5)) == parseFloat(p2.X.toFixed(5)) &&
+		parseFloat(p1.Y.toFixed(5)) == parseFloat(p2.Y.toFixed(5))
+	)
 		return 0;
 	else return p1.X > p2.X ? 1 : -1;
 }
@@ -374,44 +397,504 @@ function update_all_lines(line_segments, sweep_line_status) {
 			line_segment.set_curr_y(sweep_line_status.X);
 }
 
-function find_intersections(line_segments) {
+function drawEventLineTree(eq) {
+	let treeData = [buildCustomTree(eq)];
+	var margin = { top: 20, right: 120, bottom: 20, left: 120 },
+		width = 960 - margin.right - margin.left,
+		height = 500 - margin.top - margin.bottom;
+
+	var i = 0,
+		duration = 0,
+		root;
+
+	var tree = d3.layout.tree().size([height, width]);
+
+	var diagonal = d3.svg.diagonal().projection(function (d) {
+		return [d.y, d.x];
+	});
+
+	// var svg; // = d3.select("body svg");
+	// if (!svg)
+	if (svgeq) {
+		svgeq.selectAll("*").remove();
+	}
+	svgeq =
+		svgeq ||
+		d3
+			.select("#myTreeEvent")
+			.append("svg")
+			.attr("width", width + margin.right + margin.left)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	// svg.selectAll("*").remove();
+	// else
+	// 	svg = d3.select("body svg")
+
+	root = treeData[0];
+	root.x0 = height / 2;
+	root.y0 = 0;
+
+	update(root);
+
+	d3.select(self.frameElement).style("height", "500px");
+
+	function update(source) {
+		// d3.select("div.parent").html("");
+		// d3.selectAll("g.node").selectAll("*").remove();
+		// d3.selectAll("g.path.link").selectAll("*").remove();
+		// Compute the new tree layout.
+		var nodes = tree.nodes(root).reverse(),
+			links = tree.links(nodes);
+
+		// Normalize for fixed-depth.
+		nodes.forEach(function (d) {
+			d.y = d.depth * 100;
+		});
+
+		// Update the nodes…
+		var node = svgeq.selectAll("g.node").data(nodes, function (d) {
+			return d.id || (d.id = ++i);
+		});
+
+		// Enter any new nodes at the parent's previous position.
+		var nodeEnter = node
+			.enter()
+			.append("g")
+			.attr("class", "node")
+			.attr("transform", function (d) {
+				return "translate(" + source.y0 + "," + source.x0 + ")";
+			})
+			.on("click", click);
+
+		// node.exit().remove();
+
+		nodeEnter
+			.append("circle")
+			.attr("r", 1e-6)
+			.style("fill", function (d) {
+				return d._children ? "lightsteelblue" : "#fff";
+			});
+
+		nodeEnter
+			.append("text")
+			.attr(
+				"x",
+				0 /* function (d) {
+				return d.children || d._children ? -13 : 13;
+			} */
+			)
+			.attr("dy", ".35em")
+			.attr(
+				"text-anchor",
+				"middle" /* function (d) {
+						return d.children || d._children ? "end" : "start";
+					} */
+			)
+			.text(function (d) {
+				return d.name;
+			})
+			.style("fill-opacity", 1e-6);
+
+		// Transition nodes to their new position.
+		var nodeUpdate = node
+			.transition()
+			.duration(duration)
+			.attr("transform", function (d) {
+				return "translate(" + d.y + "," + d.x + ")";
+			});
+
+		nodeUpdate
+			.select("circle")
+			.attr("r", 25)
+			.style("fill", function (d) {
+				return d._children ? "lightsteelblue" : "#fff";
+			});
+
+		nodeUpdate
+			.select("text")
+			.style("fill-opacity", 1)
+			.style("text-anchor", "middle");
+
+		// Transition exiting nodes to the parent's new position.
+		var nodeExit = node
+			.exit()
+			.transition()
+			.duration(duration)
+			.attr("transform", function (d) {
+				return "translate(" + source.y + "," + source.x + ")";
+			})
+			.remove();
+
+		nodeExit.select("circle").attr("r", 1e-6);
+
+		nodeExit.select("text").style("fill-opacity", 1e-6);
+
+		// Update the links…
+		var link = svgeq.selectAll("path.link").data(links, function (d) {
+			return d.target.id;
+		});
+
+		// Enter any new links at the parent's previous position.
+		link
+			.enter()
+			.insert("path", "g")
+			.attr("class", "link")
+			.attr("d", function (d) {
+				var o = { x: source.x0, y: source.y0 };
+				return diagonal({ source: o, target: o });
+			});
+
+		// Transition links to their new position.
+		link.transition().duration(duration).attr("d", diagonal);
+
+		// Transition exiting nodes to the parent's new position.
+		link
+			.exit()
+			.transition()
+			.duration(duration)
+			.attr("d", function (d) {
+				var o = { x: source.x, y: source.y };
+				return diagonal({ source: o, target: o });
+			})
+			.remove();
+
+		// Stash the old positions for transition.
+		nodes.forEach(function (d) {
+			d.x0 = d.x;
+			d.y0 = d.y;
+		});
+	}
+
+	// Toggle children on click.
+	function click(d) {
+		if (d.children) {
+			d._children = d.children;
+			d.children = null;
+		} else {
+			d.children = d._children;
+			d._children = null;
+		}
+		update(d);
+	}
+}
+
+function highlightEventNode(node) {
+	svgeq.selectAll("g.node").forEach((n) => {
+		for (let nd of n) {
+			if (nd.textContent == node.toString()) {
+				nd.children[0].style.fill = "red";
+			}
+		}
+	});
+}
+
+async function find_intersections(line_segments) {
 	// """
 	// find the intersections between all the line segments using the plane sweep algorithm
 	// :param line_segments: list of line segments to find the intersections for
 	// :return: list of intersections between these lines
 	// """
+
 	let line_intersections = new TreeSet();
 	line_intersections.compareFunc = cmp_points;
 	let event_queue = new TreeSet();
 	event_queue.compareFunc = cmp_event;
 	let sweep_line_status = new SweepLineStatus(cmp_line);
 
+	let p = new Promise((resolve, reject) => {
+		var nextbutton = document.getElementById("nextBtn");
+		Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+	});
+	await p;
+
 	for (let line_segment of line_segments) {
 		let points = line_segment.get_points();
 
 		event_queue.add(new MyEvent(points[0], EventType.START_POINT));
 		event_queue.add(new MyEvent(points[1], EventType.END_POINT));
+
+		highlightLine = line_segment;
+		myp5.draw();
+
+		let eqListElement = document.getElementById("eventQueueList");
+		eqListElement.innerText = event_queue.toString();
+
+		drawEventLineTree(event_queue.__t.head.root);
+		p = new Promise((resolve, reject) => {
+			var nextbutton = document.getElementById("nextBtn");
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		});
+		await p;
 	}
+	highlightLine = new LineSegment(
+		new Point(0, 0, "highlightLine"),
+		new Point(0, 0, "highlightLine")
+	);
+
+	// const height = 500,
+	// width = 500;
+	// const treemap = d3.layout.tree().size([height, width]);
+	// let nodes = d3.hierarchy([{}], (d) => [d.left, d.right]);
+	// nodes = treemap(nodes);
+	// treemap.start();
 
 	while (event_queue.size != 0) {
-		s = "["
+		s = "[ ";
 		// if (DEBUG_MODE) console.log("[ ", (end = ""));
-		if (DEBUG_MODE)
-			for (let event of event_queue)
-				s+=event.toString() + ", "
-				// console.log(event.toString(), (end = ", "));
-		s+=" ]"
+		if (DEBUG_MODE) for (let event of event_queue) s += event.toString() + ", ";
+		// console.log(event.toString(), (end = ", "));
+		s += " ]";
 		if (DEBUG_MODE) console.log(s);
 		let forward_event_iterator = event_queue.begin();
 		let event = forward_event_iterator.key;
+
+		highlightEventNode(event);
+		let p = new Promise((resolve, reject) => {
+			var nextbutton = document.getElementById("nextBtn");
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		});
+		await p;
+
+		event_point = event.Point;
 		event_queue.erase(forward_event_iterator);
 
 		// # if event.event_type != EventType.INTERSECTION:
 		sweep_line_status.set_status(event.Point.X);
+		sweepline_x = event.Point.X;
 		update_all_lines(line_segments, sweep_line_status);
 		handle_event(event, event_queue, sweep_line_status, line_intersections);
+		drawSweepLineTree(sweep_line_status.ordered_BST.__t.head.root);
+		drawEventLineTree(event_queue.__t.head.root);
+
+		const eqListElement = document.getElementById("eventQueueList");
+		eqListElement.innerText = event_queue.toString();
+		const sweeplineListElement = document.getElementById("sweepLineList");
+		sweeplineListElement.innerText = sweep_line_status.toString();
+
+		p = new Promise((resolve, reject) => {
+			var nextbutton = document.getElementById("nextBtn");
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		});
+		await p;
 	}
+	document.getElementById("nextBtn").disabled = true;
 	return line_intersections;
+}
+
+function buildCustomTree(node) {
+	if (node.id) {
+		return [];
+	}
+
+	let newNode = {
+		name: node.key.name || node.key.toString(),
+		children: [],
+	};
+
+	if (!node.id) {
+		newNode.parent = "null";
+	}
+
+	if (node.left != null && !node.left.id) {
+		let left_child = buildCustomTree(node.left);
+		left_child.parent = newNode.name;
+		newNode.children.push(left_child);
+	} /* else {
+		newNode.children.push(null);
+	} */
+
+	if (node.right != null && !node.right.id) {
+		let right_child = buildCustomTree(node.right);
+		right_child.parent = newNode.name;
+		newNode.children.push(right_child);
+	} /* else {
+		newNode.children.push(null);
+	} */
+
+	return newNode;
+}
+
+function drawSweepLineTree(ssl) {
+	let treeData = [buildCustomTree(ssl)];
+	var margin = { top: 20, right: 120, bottom: 20, left: 120 },
+		width = 960 - margin.right - margin.left,
+		height = 500 - margin.top - margin.bottom;
+
+	var i = 0,
+		duration = 0,
+		root;
+
+	var tree = d3.layout.tree().size([height, width]);
+
+	var diagonal = d3.svg.diagonal().projection(function (d) {
+		return [d.y, d.x];
+	});
+
+	// var svg; // = d3.select("body svg");
+	// if (!svg)
+	if (svgsl) {
+		svgsl.selectAll("*").remove();
+	}
+	svgsl =
+		svgsl ||
+		d3
+			.select("#myTreeSweep")
+			.append("svg")
+			.attr("width", width + margin.right + margin.left)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	// svg.selectAll("*").remove();
+	// else
+	// 	svg = d3.select("body svg")
+
+	root = treeData[0];
+	root.x0 = height / 2;
+	root.y0 = 0;
+
+	update(root);
+
+	d3.select(self.frameElement).style("height", "500px");
+
+	function update(source) {
+		// d3.select("div.parent").html("");
+		// d3.selectAll("g.node").selectAll("*").remove();
+		// d3.selectAll("g.path.link").selectAll("*").remove();
+		// Compute the new tree layout.
+		var nodes = tree.nodes(root).reverse(),
+			links = tree.links(nodes);
+
+		// Normalize for fixed-depth.
+		nodes.forEach(function (d) {
+			d.y = d.depth * 100;
+		});
+
+		// Update the nodes…
+		var node = svgsl.selectAll("g.node").data(nodes, function (d) {
+			return d.id || (d.id = ++i);
+		});
+
+		// Enter any new nodes at the parent's previous position.
+		var nodeEnter = node
+			.enter()
+			.append("g")
+			.attr("class", "node")
+			.attr("transform", function (d) {
+				return "translate(" + source.y0 + "," + source.x0 + ")";
+			})
+			.on("click", click);
+
+		// node.exit().remove();
+
+		nodeEnter
+			.append("circle")
+			.attr("r", 1e-6)
+			.style("fill", function (d) {
+				return d._children ? "lightsteelblue" : "#fff";
+			});
+
+		nodeEnter
+			.append("text")
+			.attr(
+				"x",
+				0 /* function (d) {
+				return d.children || d._children ? -13 : 13;
+			} */
+			)
+			.attr("dy", ".35em")
+			.attr(
+				"text-anchor",
+				"middle" /* function (d) {
+						return d.children || d._children ? "end" : "start";
+					} */
+			)
+			.text(function (d) {
+				return d.name;
+			})
+			.style("fill-opacity", 1e-6);
+
+		// Transition nodes to their new position.
+		var nodeUpdate = node
+			.transition()
+			.duration(duration)
+			.attr("transform", function (d) {
+				return "translate(" + d.y + "," + d.x + ")";
+			});
+
+		nodeUpdate
+			.select("circle")
+			.attr("r", 25)
+			.style("fill", function (d) {
+				return d._children ? "lightsteelblue" : "#fff";
+			});
+
+		nodeUpdate
+			.select("text")
+			.style("fill-opacity", 1)
+			.style("text-anchor", "middle");
+
+		// Transition exiting nodes to the parent's new position.
+		var nodeExit = node
+			.exit()
+			.transition()
+			.duration(duration)
+			.attr("transform", function (d) {
+				return "translate(" + source.y + "," + source.x + ")";
+			})
+			.remove();
+
+		nodeExit.select("circle").attr("r", 1e-6);
+
+		nodeExit.select("text").style("fill-opacity", 1e-6);
+
+		// Update the links…
+		var link = svgsl.selectAll("path.link").data(links, function (d) {
+			return d.target.id;
+		});
+
+		// Enter any new links at the parent's previous position.
+		link
+			.enter()
+			.insert("path", "g")
+			.attr("class", "link")
+			.attr("d", function (d) {
+				var o = { x: source.x0, y: source.y0 };
+				return diagonal({ source: o, target: o });
+			});
+
+		// Transition links to their new position.
+		link.transition().duration(duration).attr("d", diagonal);
+
+		// Transition exiting nodes to the parent's new position.
+		link
+			.exit()
+			.transition()
+			.duration(duration)
+			.attr("d", function (d) {
+				var o = { x: source.x, y: source.y };
+				return diagonal({ source: o, target: o });
+			})
+			.remove();
+
+		// Stash the old positions for transition.
+		nodes.forEach(function (d) {
+			d.x0 = d.x;
+			d.y0 = d.y;
+		});
+	}
+
+	// Toggle children on click.
+	function click(d) {
+		if (d.children) {
+			d._children = d.children;
+			d.children = null;
+		} else {
+			d.children = d._children;
+			d._children = null;
+		}
+		update(d);
+	}
 }
 
 function find_intersections_brute_force(line_segments) {
@@ -437,7 +920,7 @@ function find_intersections_brute_force(line_segments) {
 		if (DEBUG_MODE) console.log(point[0], point[1], point[2]);
 }
 
-function main() {
+async function main() {
 	// ""5
 	// driver function
 	// :return: None
@@ -513,7 +996,7 @@ function main() {
 		line.Point2.Segment = line;
 	}
 
-	let intersections = find_intersections(line_segments);
+	let intersections = await find_intersections(line_segments);
 	// # find_intersections_brute_force(line_segments)
 	// console.log("intersection points:")
 	// for (const point of intersections) console.log(point);
@@ -528,10 +1011,21 @@ function main() {
 		it.next()
 	) {
 		div_to_show_intersections.innerText += `${it.key}\n`;
+		// myp5.stroke("white"); // Change the color
+		// myp5.strokeWeight(16);
+		// if (myp5 != null && myp5 != undefined) {
+		// 	myp5.point(it.key.x, it.key.y);
+		// }
+		// myp5.strokeWeight(1);
+		intersectionPoints.push(it.key);
 		console.log(`key: ${it.key}, value: ${it.value}`);
 	}
 
 	// plot_lines_and_intersections(line_segments, intersections)
+}
+
+function drawGraph() {
+	myp5.draw();
 }
 
 function showGraph() {
@@ -546,34 +1040,124 @@ function showGraph() {
 		100 53 25 21
 		81 99 16 98
 		35 78 70 93 
-		 */
+	*/
+
+	document.getElementById("nextBtn").disabled = false;
+	document.getElementById("showgraph").disabled = true;
+
+	main();
+
 	const s = (p) => {
 		let x = 100;
 		let y = 100;
 
 		p.setup = function () {
-			p.createCanvas(700, 550);
+			p.createCanvas(700 * scaleDownFactor, 550 * scaleDownFactor);
 		};
 
 		p.draw = function () {
+			p.clear();
+			scaleFactor = 5 * scaleDownFactor;
+
 			p.background(0);
 			p.fill(255);
 			// p.rect(x, y, 50, 50);
 			p.stroke(255);
-			p.line(10 * 5, 57 * 5, 79 * 5, 46 * 5);
-			p.line(12 * 5, 32 * 5, 95 * 5, 19 * 5);
-			p.line(44 * 5, 8 * 5, 14 * 5, 70 * 5);
-			p.line(97 * 5, 74 * 5, 68 * 5, 17 * 5);
-			p.line(43 * 5, 25 * 5, 14 * 5, 65 * 5);
-			p.line(61 * 5, 11 * 5, 16 * 5, 6 * 5);
-			p.line(26 * 5, 94 * 5, 53 * 5, 31 * 5);
-			p.line(100 * 5, 53 * 5, 25 * 5, 21 * 5);
-			p.line(81 * 5, 99 * 5, 16 * 5, 98 * 5);
-			p.line(35 * 5, 78 * 5, 70 * 5, 93 * 5);
+			p.line(
+				10 * scaleFactor,
+				57 * scaleFactor,
+				79 * scaleFactor,
+				46 * scaleFactor
+			);
+			p.line(
+				12 * scaleFactor,
+				32 * scaleFactor,
+				95 * scaleFactor,
+				19 * scaleFactor
+			);
+			p.line(
+				44 * scaleFactor,
+				8 * scaleFactor,
+				14 * scaleFactor,
+				70 * scaleFactor
+			);
+			p.line(
+				97 * scaleFactor,
+				74 * scaleFactor,
+				68 * scaleFactor,
+				17 * scaleFactor
+			);
+			p.line(
+				43 * scaleFactor,
+				25 * scaleFactor,
+				14 * scaleFactor,
+				65 * scaleFactor
+			);
+			p.line(
+				61 * scaleFactor,
+				11 * scaleFactor,
+				16 * scaleFactor,
+				6 * scaleFactor
+			);
+			p.line(
+				26 * scaleFactor,
+				94 * scaleFactor,
+				53 * scaleFactor,
+				31 * scaleFactor
+			);
+			p.line(
+				100 * scaleFactor,
+				53 * scaleFactor,
+				25 * scaleFactor,
+				21 * scaleFactor
+			);
+			p.line(
+				81 * scaleFactor,
+				99 * scaleFactor,
+				16 * scaleFactor,
+				98 * scaleFactor
+			);
+			p.line(
+				35 * scaleFactor,
+				78 * scaleFactor,
+				70 * scaleFactor,
+				93 * scaleFactor
+			);
+
+			p.stroke("red");
+			p.strokeWeight(16);
+			for (let pt of intersectionPoints) {
+				p.point(pt.x * scaleFactor, pt.y * scaleFactor);
+			}
+			p.strokeWeight(1);
+
+			p.stroke("yellow");
+			p.line(
+				sweepline_x * 5 * scaleDownFactor,
+				0,
+				sweepline_x * 5 * scaleDownFactor,
+				550 * scaleDownFactor
+			);
+
+			p.strokeWeight(16);
+			p.point(
+				event_point.X * 5 * scaleDownFactor,
+				event_point.Y * 5 * scaleDownFactor
+			);
+			p.strokeWeight(1);
+
+			p.line(
+				highlightLine.Point1.X * scaleFactor,
+				highlightLine.Point1.Y * scaleFactor,
+				highlightLine.Point2.X * scaleFactor,
+				highlightLine.Point2.Y * scaleFactor
+			);
+			// highlightLine;
 		};
 	};
 
-	let myp5 = new p5(s, "plot_graph");
+	if (!myp5) myp5 = new p5(s, "plot_graph");
+	else myp5.draw();
 }
 
 // main();

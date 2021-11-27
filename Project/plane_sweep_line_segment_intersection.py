@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 # set this to false if you want to show the plot
 SAVE_TO_FILE = True
-DEBUG_MODE = False
+DEBUG_MODE = True
 
 
 def print_if_debug(value):
@@ -270,7 +270,8 @@ def read_file() -> List[LineSegment]:
     reads the file and creates structured array and line segments
     :return:
     """
-    filename = sys.argv[1]
+    # filename = sys.argv[1]
+    filename = "datapoints.txt"
     data_points = []
 
     line_counter = 0

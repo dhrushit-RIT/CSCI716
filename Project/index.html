@@ -22,18 +22,45 @@
 			crossorigin="anonymous"
 		></script>
 		<script src="./lib/p5.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
 		<script src="jstreemap.js"></script>
+		<script src="https://unpkg.com/@reactivex/rxjs@5.3.0/dist/global/Rx.js"></script>
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.4.0/rxjs.umd.min.js" integrity="sha512-+44c+4RaNWpQRmhz2dwqH+t6caPi46MTcLaQr96rnvXOOW7SInBN4ivxSIZyqGlLSUOw5UQ+ndUmN417dJPXNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 		<script src="./src/js/EventType.js"></script>
 		<script src="./src/js/MyEvent.js"></script>
 		<script src="./src/js/LineSegment.js"></script>
 		<script src="./src/js/Point.js"></script>
 		<script src="./src/js/SweepLineStatus.js"></script>
 		<script src="./src/js/PlaneSweep.js"></script>
+		<style>
+			.node {
+				cursor: pointer;
+			}
+
+			.node circle {
+				fill: #fff;
+				stroke: steelblue;
+				stroke-width: 3px;
+			}
+
+			.node text {
+				font: 12px sans-serif;
+			}
+
+			.link {
+				fill: none;
+				stroke: #ccc;
+				stroke-width: 2px;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="container">
 			<br />
-			<h1>Pedagogical tool for Line Segment Intersection using the plane sweep method.</h1>
+			<h1>
+				Pedagogical tool for Line Segment Intersection using the plane sweep
+				method.
+			</h1>
 
 			<hr />
 			<!-- Content here -->
@@ -284,9 +311,9 @@
 						<p id="56c9b9cf-0071-4ab3-bb0c-f6662481f465" class=""></p>
 						<br />
 						<h2 id="ea5ef08c-9437-4288-8be7-f875ea22b3a8" class="">
-              Line sweep approach
+							Line sweep approach
 						</h2>
-            <br />
+						<br />
 						<h3 id="ab57846c-8128-4610-86f7-39772af2e012" class="">
 							Assumptions
 						</h3>
@@ -506,13 +533,54 @@
 					<h2 id="8adf7062-0b73-43c6-9879-f8451af4b085" class="">
 						Implementation
 					</h2>
+					<div class="row">
+						<div class="col">
+							<button
+								id="showgraph"
+								onclick="showGraph()"
+								style="position: fixed; display: block"
+							>
+								Show Graph
+							</button>
+						</div>
+						<div class="col">
+							<button
+								id="nextBtn"
+								style="position: fixed; display: block; float: right"
+								disabled
+							>
+								next
+							</button>
+						</div>
+					</div>
 
-					<div id="plot_graph"></div>
+					<br />
+
+					<div class="row">
+						<div class="col-6">
+							<div id="plot_graph" style="position: fixed"></div>
+						</div>
+						<div class="col-6">
+							<div class="row">
+								<p>Event Queue:</p>
+								<p id="eventQueueList"></p>
+
+								<div id="myTreeEvent"></div>
+							</div>
+							<div class="row">
+								<p>Sweep Line:</p>
+								<p id="sweepLineList"></p>
+								<div id="myTreeSweep"></div>
+							</div>
+						</div>
+					</div>
 					<div>
-						<p id="intersection_points">Intersection Points:</p>
-					</div> 
-					<button id="calculate" onclick="main()">Find Intersections</button>
-					<button id="showgraph" onclick="showGraph()">Show Graph</button>
+						<p id="intersection_points"></p>
+					</div>
+					<script>
+						// var p = new p5();
+					</script>
+					<!-- <button id="calculate" onclick="main()">Find Intersections</button> -->
 				</div>
 			</div>
 		</div>

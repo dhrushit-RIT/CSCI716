@@ -8,7 +8,7 @@ class SweepLineStatus {
 	x;
 
 	toString() {
-		return this.x + " " + this.ordered_BST;
+		return "x:" + this.x.toFixed(3) + " | " + this.ordered_BST;
 	}
 
 	constructor(comp) {
