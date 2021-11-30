@@ -1161,3 +1161,28 @@ function showGraph() {
 }
 
 // main();
+
+var fixmeoffset = $(".fixme").offset()
+var fixmeTop = fixmeoffset.top;
+
+$(window).scroll(function () {
+	// assign scroll event listener
+
+	var currentScroll = $(window).scrollTop(); // get current position
+
+	if (currentScroll >= fixmeTop) {
+		// apply position: fixed if you
+		$(".fixme").css({
+			// scroll to that element or below it
+			position: "fixed",
+			top: "20%",
+			left: "0",
+		});
+	} else {
+		// apply position: static
+		$(".fixme").css({
+			// if you scroll above it
+			position: "static",
+		});
+	}
+});
