@@ -1,6 +1,12 @@
 var DEBUG_MODE = true;
 
+var line_segments = [];
+
 var scaleDownFactor = 0.8;
+
+var newIntersectingLines = [];
+var newIntersectingPoint = null;
+var newIntersectionEvent = null;
 
 var myp5;
 var intersectionPoints = [];
@@ -17,6 +23,25 @@ var event_point = new Point(0, 0, null);
 
 var event_queue_history = [];
 var sweep_line_status_history = [];
+
+function reset_all() {
+	scaleDownFactor = 0.8;
+	intersectionPoints = [];
+	sweepline_x = 0;
+
+	sweepLineToHighlight = new LineSegment(
+		new Point(0, 0, "highlightLine"),
+		new Point(0, 0, "highlightLine")
+	);
+
+	event_point = new Point(0, 0, null);
+
+	event_queue_history = [];
+	sweep_line_status_history = [];
+	myp5.draw();
+	document.getElementById("resetBtn").disabled = true;
+	document.getElementById("nextBtn").disabled = false;
+}
 
 function cmp_event(e1, e2) {
 	// """
@@ -149,6 +174,39 @@ function check_if_intersecting_in_range(l1, l2) {
 	return [t1_in_range && t2_in_range, intersection_point];
 }
 
+function handleFiles(files) {
+	let file = this.files[0];
+
+	const reader = new FileReader();
+	reader.onload = function (fileContent) {
+		afterFileLoads(fileContent.target.result);
+	};
+	reader.readAsText(file);
+}
+
+function afterFileLoads(content) {
+	line_segments = [];
+	let lines = content.split("\n").map((item) => item.trim());
+	lines = lines.slice(1);
+	makeLines(lines);
+	myp5.draw();
+}
+
+function makeLines(lineStrArr) {
+	let lineIndex = 0;
+	for (let line of lineStrArr) {
+		const points = line.split(/\s/).map((item) => parseFloat(item));
+		line_segments.push(
+			new LineSegment(
+				new Point(points[0], points[1], EventType.START_POINT),
+				new Point(points[2], points[3], EventType.END_POINT),
+				"L" + lineIndex
+			)
+		);
+		lineIndex++;
+	}
+}
+
 function check_for_intersection(event_queue, l1, l2, sweep_line_status) {
 	// """
 	// checks for the intersection of the line segments and adds to the event queue
@@ -181,12 +239,15 @@ function check_for_intersection(event_queue, l1, l2, sweep_line_status) {
 						lines_sorted_by_y[1].name
 					);
 				event_queue.add(intersection_event);
+				drawEventLineTree(event_queue.__t.head.root);
+				newIntersectionEvent = intersection_event;
+				newIntersectingPoint = intersection_point;
 			}
 		}
 	}
 }
 
-function handle_start(event, sweep_line_status, event_queue) {
+async function handle_start(event, sweep_line_status, event_queue) {
 	// """
 	// handles the processing of event if the event is start point of the line segment
 	// :param event: the current event object
@@ -207,27 +268,58 @@ function handle_start(event, sweep_line_status, event_queue) {
 	const next_itr = sweep_line_status.OrderedBST.find(event.Point.LineSegment);
 	next_itr.next();
 	let successor_line = next_itr.key;
-	if (successor_line)
+	if (successor_line) {
 		check_for_intersection(
 			event_queue,
 			event.Point.LineSegment,
 			successor_line,
 			sweep_line_status
 		);
+
+		newIntersectingLines = [event.Point.LineSegment, successor_line];
+		myp5.draw();
+
+		let prom = new Promise((resolve, reject) => {
+			var nextbutton = document.getElementById("nextBtn");
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		});
+		await prom;
+
+		newIntersectingLines = [];
+		newIntersectingPoint = null;
+		newIntersectionEvent = null;
+		myp5.draw();
+	}
+
 	// # check if it intersects with predecessor
 	const prev_itr = sweep_line_status.OrderedBST.find(event.Point.LineSegment);
 	prev_itr.prev();
 	let predecessor_line = prev_itr.key;
-	if (predecessor_line)
+	if (predecessor_line) {
 		check_for_intersection(
 			event_queue,
 			event.Point.LineSegment,
 			predecessor_line,
 			sweep_line_status
 		);
+
+		newIntersectingLines = [event.Point.LineSegment, predecessor_line];
+		myp5.draw();
+
+		let p = new Promise((resolve, reject) => {
+			var nextbutton = document.getElementById("nextBtn");
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		});
+		await p;
+
+		newIntersectingLines = [];
+		newIntersectingPoint = null;
+		newIntersectionEvent = null;
+		myp5.draw();
+	}
 }
 
-function handle_end(event, sweep_line_status, event_queue) {
+async function handle_end(event, sweep_line_status, event_queue) {
 	// """
 	// handles the processing of event if the event is end point of the line segment
 	// :param event: the current event object
@@ -254,16 +346,30 @@ function handle_end(event, sweep_line_status, event_queue) {
 	sweep_line_status.OrderedBST.delete(line_to_remove);
 	if (DEBUG_MODE) console.log(sweep_line_status.toString());
 	// # check for the intersection of the lines that are now adjacent
-	if (predecessor_line && successor_line)
+	if (predecessor_line && successor_line) {
 		check_for_intersection(
 			event_queue,
 			predecessor_line,
 			successor_line,
 			sweep_line_status
 		);
+		newIntersectingLines = [predecessor_line, successor_line];
+		myp5.draw();
+
+		let p = new Promise((resolve, reject) => {
+			var nextbutton = document.getElementById("nextBtn");
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		});
+		await p;
+
+		newIntersectingLines = [];
+		newIntersectingPoint = null;
+		newIntersectionEvent = null;
+		myp5.draw();
+	}
 }
 
-function handle_intersection(
+async function handle_intersection(
 	event,
 	sweep_line_status,
 	event_queue,
@@ -299,17 +405,32 @@ function handle_intersection(
 	const prev_itr = sweep_line_status.OrderedBST.find(l1);
 	prev_itr.prev();
 	let new_predecessor_of_l1 = prev_itr.key;
-	if (new_predecessor_of_l1)
+	if (new_predecessor_of_l1) {
 		check_for_intersection(
 			event_queue,
 			l1,
 			new_predecessor_of_l1,
 			sweep_line_status
 		);
+
+		newIntersectingLines = [l1, new_predecessor_of_l1];
+		myp5.draw();
+
+		let p = new Promise((resolve, reject) => {
+			var nextbutton = document.getElementById("nextBtn");
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		});
+		await p;
+
+		newIntersectingLines = [];
+		newIntersectingPoint = null;
+		newIntersectionEvent = null;
+		myp5.draw();
+	}
 	const next_itr = sweep_line_status.OrderedBST.find(l0);
 	next_itr.next();
 	let new_successor_of_l0 = next_itr.key;
-	if (new_successor_of_l0)
+	if (new_successor_of_l0) {
 		check_for_intersection(
 			event_queue,
 			l0,
@@ -317,12 +438,26 @@ function handle_intersection(
 			sweep_line_status
 		);
 
+		newIntersectingLines = [l0, new_successor_of_l0];
+		myp5.draw();
+
+		let p = new Promise((resolve, reject) => {
+			var nextbutton = document.getElementById("nextBtn");
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		});
+		await p;
+
+		newIntersectingLines = [];
+		newIntersectingPoint = null;
+		newIntersectionEvent = null;
+		myp5.draw();
+	}
 	line_intersections.add(event.Point);
 	intersectionPoints.push(event.Point);
 	myp5.draw();
 }
 
-function handle_event(
+async function handle_event(
 	event,
 	event_queue,
 	sweep_line_status,
@@ -340,11 +475,11 @@ function handle_event(
 	// """
 	// if (DEBUG_MODE) console.log(event.toString());
 	if (event.Event_Type == EventType.START_POINT)
-		handle_start(event, sweep_line_status, event_queue);
+		await handle_start(event, sweep_line_status, event_queue);
 	else if (event.Event_Type == EventType.END_POINT)
-		handle_end(event, sweep_line_status, event_queue);
+		await handle_end(event, sweep_line_status, event_queue);
 	else
-		handle_intersection(
+		await handle_intersection(
 			event,
 			sweep_line_status,
 			event_queue,
@@ -663,7 +798,12 @@ async function find_intersections(line_segments) {
 		sweep_line_status.set_status(event.Point.X);
 		sweepline_x = event.Point.X;
 		update_all_lines(line_segments, sweep_line_status);
-		handle_event(event, event_queue, sweep_line_status, line_intersections);
+		await handle_event(
+			event,
+			event_queue,
+			sweep_line_status,
+			line_intersections
+		);
 		drawSweepLineTree(sweep_line_status.ordered_BST.__t.head.root);
 		drawEventLineTree(event_queue.__t.head.root);
 
@@ -938,58 +1078,12 @@ async function main() {
 		81 99 16 98
 		35 78 70 93 
 	*/
-	let line_segments = [
-		new LineSegment(
-			new Point(10, 57, EventType.START_POINT),
-			new Point(79, 46, EventType.END_POINT),
-			"line0"
-		),
-		new LineSegment(
-			new Point(12, 32, EventType.START_POINT),
-			new Point(95, 19, EventType.END_POINT),
-			"line1"
-		),
-		new LineSegment(
-			new Point(44, 8, EventType.START_POINT),
-			new Point(14, 70, EventType.END_POINT),
-			"line2"
-		),
-		new LineSegment(
-			new Point(97, 74, EventType.START_POINT),
-			new Point(68, 17, EventType.END_POINT),
-			"line3"
-		),
-		new LineSegment(
-			new Point(43, 25, EventType.START_POINT),
-			new Point(14, 65, EventType.END_POINT),
-			"line4"
-		),
-		new LineSegment(
-			new Point(61, 11, EventType.START_POINT),
-			new Point(16, 6, EventType.END_POINT),
-			"line5"
-		),
-		new LineSegment(
-			new Point(26, 94, EventType.START_POINT),
-			new Point(53, 31, EventType.END_POINT),
-			"line6"
-		),
-		new LineSegment(
-			new Point(100, 53, EventType.START_POINT),
-			new Point(25, 21, EventType.END_POINT),
-			"line7"
-		),
-		new LineSegment(
-			new Point(81, 99, EventType.START_POINT),
-			new Point(16, 98, EventType.END_POINT),
-			"line8"
-		),
-		new LineSegment(
-			new Point(35, 78, EventType.START_POINT),
-			new Point(70, 93, EventType.END_POINT),
-			"line9"
-		),
-	];
+
+	const linesStr =
+		"10 57 79 46\n12 32 95 19\n44 8 14 70\n97 74 68 17\n43 25 14 65\n61 11 16 6\n26 94 53 31\n100 53 25 21\n81 99 16 98\n35 78 70 93";
+	
+
+	makeLines(linesStr.split("\n"));
 
 	for (let line of line_segments) {
 		line.Point1.Segment = line;
@@ -1001,9 +1095,13 @@ async function main() {
 	// console.log("intersection points:")
 	// for (const point of intersections) console.log(point);
 	// let it = intersections.begin();
+
+	document.getElementById("resetBtn").disabled = false;
 	let div_to_show_intersections = document.getElementById(
 		"intersection_points"
 	);
+	sweepline_x = 700 * scaleDownFactor;
+	event_point = new Point(700 * scaleDownFactor, 0, null);
 	div_to_show_intersections.innerText = "Intersection Points:\n";
 	for (
 		let it = intersections.begin();
@@ -1026,6 +1124,99 @@ async function main() {
 
 function drawGraph() {
 	myp5.draw();
+}
+
+function drawLines(p) {
+	for (let line of line_segments) {
+		p.line(
+			line.Point1.X * scaleFactor,
+			line.Point1.Y * scaleFactor,
+			line.Point2.X * scaleFactor,
+			line.Point2.Y * scaleFactor
+		);
+	}
+}
+
+function drawIntersectingPoints(p) {
+	p.stroke("red");
+	p.strokeWeight(16);
+	for (let pt of intersectionPoints) {
+		p.point(pt.x * scaleFactor, pt.y * scaleFactor);
+	}
+	p.strokeWeight(1);
+}
+
+function highlightSweepLine(p) {
+	p.stroke("yellow");
+	p.line(
+		sweepline_x * 5 * scaleDownFactor,
+		0,
+		sweepline_x * 5 * scaleDownFactor,
+		550 * scaleDownFactor
+	);
+}
+
+function highlightEventPoint(p) {
+	p.strokeWeight(16);
+	p.point(
+		event_point.X * 5 * scaleDownFactor,
+		event_point.Y * 5 * scaleDownFactor
+	);
+}
+
+function highlightLineSegment(p) {
+	p.strokeWeight(5);
+	p.line(
+		highlightLine.Point1.X * scaleFactor,
+		highlightLine.Point1.Y * scaleFactor,
+		highlightLine.Point2.X * scaleFactor,
+		highlightLine.Point2.Y * scaleFactor
+	);
+	p.strokeWeight(1);
+}
+
+function highlightIntersectingLines(p) {
+	p.strokeWeight(5);
+	p.stroke("blue");
+	for (let line of newIntersectingLines) {
+		p.line(
+			line.Point1.X * scaleFactor,
+			line.Point1.Y * scaleFactor,
+			line.Point2.X * scaleFactor,
+			line.Point2.Y * scaleFactor
+		);
+	}
+
+	defaultStrokes(p);
+}
+
+function highlightNewIntersectionPoint(p) {
+	if (newIntersectingPoint != null) {
+		p.strokeWeight(15);
+		p.stroke("green");
+		p.point(
+			newIntersectingPoint.X * 5 * scaleDownFactor,
+			newIntersectingPoint.Y * 5 * scaleDownFactor
+		);
+		defaultStrokes(p);
+	}
+}
+
+function hightlightNewIntersectionEvent(p) {
+	if (!svgeq || !newIntersectionEvent) return;
+	svgeq.selectAll("g.node").forEach((n) => {
+		for (let nd of n) {
+			if (nd.textContent == newIntersectionEvent.toString()) {
+				nd.children[0].style.fill = "green";
+			}
+		}
+	});
+	// highlightEventNode(intersection_event);
+}
+
+function defaultStrokes(p) {
+	p.stroke("white");
+	p.strokeWeight(1);
 }
 
 function showGraph() {
@@ -1063,95 +1254,18 @@ function showGraph() {
 			p.fill(255);
 			// p.rect(x, y, 50, 50);
 			p.stroke(255);
-			p.line(
-				10 * scaleFactor,
-				57 * scaleFactor,
-				79 * scaleFactor,
-				46 * scaleFactor
-			);
-			p.line(
-				12 * scaleFactor,
-				32 * scaleFactor,
-				95 * scaleFactor,
-				19 * scaleFactor
-			);
-			p.line(
-				44 * scaleFactor,
-				8 * scaleFactor,
-				14 * scaleFactor,
-				70 * scaleFactor
-			);
-			p.line(
-				97 * scaleFactor,
-				74 * scaleFactor,
-				68 * scaleFactor,
-				17 * scaleFactor
-			);
-			p.line(
-				43 * scaleFactor,
-				25 * scaleFactor,
-				14 * scaleFactor,
-				65 * scaleFactor
-			);
-			p.line(
-				61 * scaleFactor,
-				11 * scaleFactor,
-				16 * scaleFactor,
-				6 * scaleFactor
-			);
-			p.line(
-				26 * scaleFactor,
-				94 * scaleFactor,
-				53 * scaleFactor,
-				31 * scaleFactor
-			);
-			p.line(
-				100 * scaleFactor,
-				53 * scaleFactor,
-				25 * scaleFactor,
-				21 * scaleFactor
-			);
-			p.line(
-				81 * scaleFactor,
-				99 * scaleFactor,
-				16 * scaleFactor,
-				98 * scaleFactor
-			);
-			p.line(
-				35 * scaleFactor,
-				78 * scaleFactor,
-				70 * scaleFactor,
-				93 * scaleFactor
-			);
 
-			p.stroke("red");
-			p.strokeWeight(16);
-			for (let pt of intersectionPoints) {
-				p.point(pt.x * scaleFactor, pt.y * scaleFactor);
-			}
-			p.strokeWeight(1);
+			drawLines(p);
+			drawIntersectingPoints(p);
 
-			p.stroke("yellow");
-			p.line(
-				sweepline_x * 5 * scaleDownFactor,
-				0,
-				sweepline_x * 5 * scaleDownFactor,
-				550 * scaleDownFactor
-			);
+			highlightSweepLine(p);
+			highlightEventPoint(p);
 
-			p.strokeWeight(16);
-			p.point(
-				event_point.X * 5 * scaleDownFactor,
-				event_point.Y * 5 * scaleDownFactor
-			);
-			p.strokeWeight(1);
+			highlightLineSegment(p);
+			highlightIntersectingLines(p);
+			highlightNewIntersectionPoint(p);
+			hightlightNewIntersectionEvent(p);
 
-			p.line(
-				highlightLine.Point1.X * scaleFactor,
-				highlightLine.Point1.Y * scaleFactor,
-				highlightLine.Point2.X * scaleFactor,
-				highlightLine.Point2.Y * scaleFactor
-			);
 			// highlightLine;
 		};
 	};
@@ -1160,29 +1274,8 @@ function showGraph() {
 	else myp5.draw();
 }
 
-// main();
-
-var fixmeoffset = $(".fixme").offset()
-var fixmeTop = fixmeoffset.top;
-
-$(window).scroll(function () {
-	// assign scroll event listener
-
-	var currentScroll = $(window).scrollTop(); // get current position
-
-	if (currentScroll >= fixmeTop) {
-		// apply position: fixed if you
-		$(".fixme").css({
-			// scroll to that element or below it
-			position: "fixed",
-			top: "20%",
-			left: "0",
-		});
-	} else {
-		// apply position: static
-		$(".fixme").css({
-			// if you scroll above it
-			position: "static",
-		});
-	}
-});
+// const fileSelector = document.getElementById("formFile");
+// fileSelector.addEventListener("change", (event) => {
+// 	const fileList = event.target.files;
+// 	console.log(fileList);
+// });
