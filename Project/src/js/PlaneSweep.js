@@ -1,8 +1,9 @@
 var DEBUG_MODE = true;
-
+var autoNext = true;
 var line_segments = [];
 
 var scaleDownFactor = 0.8;
+var timeout = 500;
 
 var newIntersectingLines = [];
 var newIntersectingPoint = null;
@@ -24,6 +25,11 @@ var event_point = new Point(0, 0, null);
 var event_queue_history = [];
 var sweep_line_status_history = [];
 
+function toggleAutoNext() {
+	const elem = document.getElementById("autoNext");
+	autoNext = elem.checked;
+}
+
 function reset_all() {
 	scaleDownFactor = 0.8;
 	intersectionPoints = [];
@@ -43,6 +49,16 @@ function reset_all() {
 	document.getElementById("nextBtn").disabled = false;
 	document.getElementById("runAlgorithm").disabled = false;
 	document.getElementById("showgraph").disabled = true;
+
+	let div_to_show_intersections = document.getElementById(
+		"intersection_points"
+	);
+	div_to_show_intersections.innerText = "";
+}
+
+function descript(text) {
+	const desc_box = document.getElementById("algorithm_description");
+	desc_box.innerText = text;
 }
 
 function cmp_event(e1, e2) {
@@ -197,6 +213,9 @@ function afterFileLoads(content) {
 function makeLines(lineStrArr) {
 	let lineIndex = 0;
 	for (let line of lineStrArr) {
+		if (!line) {
+			continue;
+		}
 		const points = line.split(/\s/).map((item) => parseFloat(item));
 		line_segments.push(
 			new LineSegment(
@@ -283,7 +302,11 @@ async function handle_start(event, sweep_line_status, event_queue) {
 
 		let prom = new Promise((resolve, reject) => {
 			var nextbutton = document.getElementById("nextBtn");
-			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			if (autoNext) {
+				setTimeout(() => resolve(), timeout);
+			} else {
+				Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			}
 		});
 		await prom;
 
@@ -310,7 +333,11 @@ async function handle_start(event, sweep_line_status, event_queue) {
 
 		let p = new Promise((resolve, reject) => {
 			var nextbutton = document.getElementById("nextBtn");
-			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			if (autoNext) {
+				setTimeout(() => resolve(), timeout);
+			} else {
+				Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			}
 		});
 		await p;
 
@@ -319,6 +346,17 @@ async function handle_start(event, sweep_line_status, event_queue) {
 		newIntersectionEvent = null;
 		myp5.draw();
 	}
+}
+
+function awaitNextBtnOrTimeout() {
+	return new Promise((resolve, reject) => {
+		var nextbutton = document.getElementById("nextBtn");
+		if (autoNext) {
+			setTimeout(() => resolve(), timeout);
+		} else {
+			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+		}
+	});
 }
 
 async function handle_end(event, sweep_line_status, event_queue) {
@@ -360,7 +398,11 @@ async function handle_end(event, sweep_line_status, event_queue) {
 
 		let p = new Promise((resolve, reject) => {
 			var nextbutton = document.getElementById("nextBtn");
-			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			if (autoNext) {
+				setTimeout(() => resolve(), timeout);
+			} else {
+				Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			}
 		});
 		await p;
 
@@ -420,7 +462,11 @@ async function handle_intersection(
 
 		let p = new Promise((resolve, reject) => {
 			var nextbutton = document.getElementById("nextBtn");
-			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			if (autoNext) {
+				setTimeout(() => resolve(), timeout);
+			} else {
+				Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			}
 		});
 		await p;
 
@@ -445,7 +491,11 @@ async function handle_intersection(
 
 		let p = new Promise((resolve, reject) => {
 			var nextbutton = document.getElementById("nextBtn");
-			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			if (autoNext) {
+				setTimeout(() => resolve(), timeout);
+			} else {
+				Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			}
 		});
 		await p;
 
@@ -760,7 +810,11 @@ async function find_intersections(line_segments) {
 		drawEventLineTree(event_queue.__t.head.root);
 		p = new Promise((resolve, reject) => {
 			var nextbutton = document.getElementById("nextBtn");
-			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			if (autoNext) {
+				setTimeout(() => resolve(), timeout);
+			} else {
+				Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			}
 		});
 		await p;
 	}
@@ -789,7 +843,11 @@ async function find_intersections(line_segments) {
 		highlightEventNode(event);
 		let p = new Promise((resolve, reject) => {
 			var nextbutton = document.getElementById("nextBtn");
-			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			if (autoNext) {
+				setTimeout(() => resolve(), timeout);
+			} else {
+				Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			}
 		});
 		await p;
 
@@ -816,7 +874,11 @@ async function find_intersections(line_segments) {
 
 		p = new Promise((resolve, reject) => {
 			var nextbutton = document.getElementById("nextBtn");
-			Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			if (autoNext) {
+				setTimeout(() => resolve(), timeout);
+			} else {
+				Rx.Observable.fromEvent(nextbutton, "click").subscribe(() => resolve());
+			}
 		});
 		await p;
 	}
@@ -1087,7 +1149,7 @@ async function runIntersectionAlgorithm() {
 	const linesStr =
 		"10 57 79 46\n12 32 95 19\n44 8 14 70\n97 74 68 17\n43 25 14 65\n61 11 16 6\n26 94 53 31\n100 53 25 21\n81 99 16 98\n35 78 70 93";
 
-	makeLines(linesStr.split("\n"));
+	// makeLines(linesStr.split("\n"));
 
 	for (let line of line_segments) {
 		line.Point1.Segment = line;
@@ -1095,10 +1157,6 @@ async function runIntersectionAlgorithm() {
 	}
 
 	let intersections = await find_intersections(line_segments);
-	// # find_intersections_brute_force(line_segments)
-	// console.log("intersection points:")
-	// for (const point of intersections) console.log(point);
-	// let it = intersections.begin();
 
 	document.getElementById("resetBtn").disabled = false;
 	let div_to_show_intersections = document.getElementById(
@@ -1113,17 +1171,9 @@ async function runIntersectionAlgorithm() {
 		it.next()
 	) {
 		div_to_show_intersections.innerText += `${it.key}\n`;
-		// myp5.stroke("white"); // Change the color
-		// myp5.strokeWeight(16);
-		// if (myp5 != null && myp5 != undefined) {
-		// 	myp5.point(it.key.x, it.key.y);
-		// }
-		// myp5.strokeWeight(1);
 		intersectionPoints.push(it.key);
 		console.log(`key: ${it.key}, value: ${it.value}`);
 	}
-
-	// plot_lines_and_intersections(line_segments, intersections)
 }
 
 function drawGraph() {
@@ -1265,17 +1315,9 @@ function showGraph() {
 			highlightIntersectingLines(p);
 			highlightNewIntersectionPoint(p);
 			hightlightNewIntersectionEvent(p);
-
-			// highlightLine;
 		};
 	};
 
 	if (!myp5) myp5 = new p5(s, "plot_graph");
 	else myp5.draw();
 }
-
-// const fileSelector = document.getElementById("formFile");
-// fileSelector.addEventListener("change", (event) => {
-// 	const fileList = event.target.files;
-// 	console.log(fileList);
-// });
