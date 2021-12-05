@@ -288,6 +288,8 @@ async function handle_start(event, sweep_line_status, event_queue) {
 		);
 	}
 	sweep_line_status.OrderedBST.add(event.Point.LineSegment);
+	drawSweepLineTree(sweep_line_status.ordered_BST.__t.head.root);
+	await awaitNextBtnOrTimeout();
 	if (DEBUG_MODE) console.log(sweep_line_status.toString());
 	// # check if it intersects with successor
 	const next_itr = sweep_line_status.OrderedBST.find(event.Point.LineSegment);
@@ -419,7 +421,10 @@ async function handle_intersection(
 		console.log("INTERSECTION for " + l0.name + " and " + l1.name);
 		console.log(sweep_line_status.toString());
 	}
-	describeAlgorithm("INTERSECTION EVENT:");
+	// drawSweepLineTree(sweep_line_status.ordered_BST.__t.head.root);
+	highlightSweeptNode(l0, "lightblue");
+	highlightSweeptNode(l1, "lightgreen");
+	describeAlgorithm("INTERSECTION EVENT: Swapping the line order");
 	await awaitNextBtnOrTimeout();
 
 	sweep_line_status.OrderedBST.delete(l0);
@@ -431,6 +436,17 @@ async function handle_intersection(
 	sweep_line_status.OrderedBST.add(l0);
 	if (DEBUG_MODE) console.log(sweep_line_status.toString());
 
+	drawSweepLineTree(sweep_line_status.ordered_BST.__t.head.root);
+	await new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve();
+		}, 10);
+	});
+	highlightSweeptNode(l0, "lightblue");
+	highlightSweeptNode(l1, "lightgreen");
+	describeAlgorithm("INTERSECTION EVENT: Line order swapped");
+	await awaitNextBtnOrTimeout();
+	drawSweepLineTree(sweep_line_status.ordered_BST.__t.head.root);
 	// # remove all the events from the queue
 	// # add all of them with the reversed order for the intersection point lines
 	// # check if after reversal, there is an intersection
@@ -749,6 +765,16 @@ function highlightEventNode(node) {
 		for (let nd of n) {
 			if (nd.textContent == node.toString()) {
 				nd.children[0].style.fill = "red";
+			}
+		}
+	});
+}
+
+function highlightSweeptNode(node, color) {
+	svgsl.selectAll("g.node").forEach((n) => {
+		for (let nd of n) {
+			if (nd.textContent == node.toString()) {
+				nd.children[0].style.fill = color;
 			}
 		}
 	});
