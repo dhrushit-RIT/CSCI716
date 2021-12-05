@@ -3,7 +3,7 @@ var autoNext = true;
 var line_segments = [];
 
 var scaleDownFactor = 0.8;
-var timeout = 500;
+var timeout = 1000;
 
 var newIntersectingLines = [];
 var newIntersectingPoint = null;
@@ -56,7 +56,7 @@ function reset_all() {
 	div_to_show_intersections.innerText = "";
 }
 
-function descript(text) {
+function describeAlgorithm(text) {
 	const desc_box = document.getElementById("algorithm_description");
 	desc_box.innerText = text;
 }
@@ -208,6 +208,10 @@ function afterFileLoads(content) {
 	lines = lines.slice(1);
 	makeLines(lines);
 	document.getElementById("showgraph").disabled = false;
+	let div_to_show_intersections = document.getElementById(
+		"intersection_points"
+	);
+	div_to_show_intersections.innerText = "";
 }
 
 function makeLines(lineStrArr) {
@@ -300,7 +304,7 @@ async function handle_start(event, sweep_line_status, event_queue) {
 		newIntersectingLines = [event.Point.LineSegment, successor_line];
 		myp5.draw();
 
-		
+		describeAlgorithm("check intersection with successor line");
 		await awaitNextBtnOrTimeout();
 
 		newIntersectingLines = [];
@@ -324,7 +328,7 @@ async function handle_start(event, sweep_line_status, event_queue) {
 		newIntersectingLines = [event.Point.LineSegment, predecessor_line];
 		myp5.draw();
 
-		
+		describeAlgorithm("check intersection with predecessor line");
 		await awaitNextBtnOrTimeout();
 
 		newIntersectingLines = [];
@@ -382,7 +386,9 @@ async function handle_end(event, sweep_line_status, event_queue) {
 		newIntersectingLines = [predecessor_line, successor_line];
 		myp5.draw();
 
-		
+		describeAlgorithm(
+			"END POINT : check intersection between predecessor and successor"
+		);
 		await awaitNextBtnOrTimeout();
 
 		newIntersectingLines = [];
@@ -413,6 +419,9 @@ async function handle_intersection(
 		console.log("INTERSECTION for " + l0.name + " and " + l1.name);
 		console.log(sweep_line_status.toString());
 	}
+	describeAlgorithm("INTERSECTION EVENT:");
+	await awaitNextBtnOrTimeout();
+
 	sweep_line_status.OrderedBST.delete(l0);
 	sweep_line_status.OrderedBST.delete(l1);
 	if (DEBUG_MODE) console.log(sweep_line_status.toString());
@@ -439,7 +448,9 @@ async function handle_intersection(
 		newIntersectingLines = [l1, new_predecessor_of_l1];
 		myp5.draw();
 
-		
+		describeAlgorithm(
+			"INTERSECTION EVENT: check intersection with new predecessor"
+		);
 		await awaitNextBtnOrTimeout();
 
 		newIntersectingLines = [];
@@ -461,7 +472,9 @@ async function handle_intersection(
 		newIntersectingLines = [l0, new_successor_of_l0];
 		myp5.draw();
 
-		
+		describeAlgorithm(
+			"INTERSECTION EVENT: check intersection with new successor"
+		);
 		await awaitNextBtnOrTimeout();
 
 		newIntersectingLines = [];
@@ -769,7 +782,8 @@ async function find_intersections(line_segments) {
 		eqListElement.innerText = event_queue.toString();
 
 		drawEventLineTree(event_queue.__t.head.root);
-		
+
+		describeAlgorithm("adding line segment " + line_segment.toString());
 		await awaitNextBtnOrTimeout();
 	}
 	highlightLine = new LineSegment(
@@ -788,15 +802,17 @@ async function find_intersections(line_segments) {
 		let event = forward_event_iterator.key;
 
 		highlightEventNode(event);
-		
-		await awaitNextBtnOrTimeout();
 
 		event_point = event.Point;
+		sweep_line_status.set_status(event.Point.X);
+		sweepline_x = event.Point.X;
+		myp5.draw();
+		describeAlgorithm("processing event: " + event.toString());
+		await awaitNextBtnOrTimeout();
+
 		event_queue.erase(forward_event_iterator);
 
 		// # if event.event_type != EventType.INTERSECTION:
-		sweep_line_status.set_status(event.Point.X);
-		sweepline_x = event.Point.X;
 		update_all_lines(line_segments, sweep_line_status);
 		await handle_event(
 			event,
@@ -812,7 +828,8 @@ async function find_intersections(line_segments) {
 		const sweeplineListElement = document.getElementById("sweepLineList");
 		sweeplineListElement.innerText = sweep_line_status.toString();
 
-		
+		// describeAlgorithm("");
+		myp5.draw();
 		await awaitNextBtnOrTimeout();
 	}
 	document.getElementById("nextBtn").disabled = true;
