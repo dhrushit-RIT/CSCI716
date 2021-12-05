@@ -41,6 +41,8 @@ function reset_all() {
 	myp5.draw();
 	document.getElementById("resetBtn").disabled = true;
 	document.getElementById("nextBtn").disabled = false;
+	document.getElementById("runAlgorithm").disabled = false;
+	document.getElementById("showgraph").disabled = true;
 }
 
 function cmp_event(e1, e2) {
@@ -189,7 +191,7 @@ function afterFileLoads(content) {
 	let lines = content.split("\n").map((item) => item.trim());
 	lines = lines.slice(1);
 	makeLines(lines);
-	myp5.draw();
+	document.getElementById("showgraph").disabled = false;
 }
 
 function makeLines(lineStrArr) {
@@ -1060,7 +1062,10 @@ function find_intersections_brute_force(line_segments) {
 		if (DEBUG_MODE) console.log(point[0], point[1], point[2]);
 }
 
-async function main() {
+async function runIntersectionAlgorithm() {
+	document.getElementById("nextBtn").disabled = false;
+	document.getElementById("runAlgorithm").disabled = true;
+
 	// ""5
 	// driver function
 	// :return: None
@@ -1081,7 +1086,6 @@ async function main() {
 
 	const linesStr =
 		"10 57 79 46\n12 32 95 19\n44 8 14 70\n97 74 68 17\n43 25 14 65\n61 11 16 6\n26 94 53 31\n100 53 25 21\n81 99 16 98\n35 78 70 93";
-	
 
 	makeLines(linesStr.split("\n"));
 
@@ -1233,10 +1237,7 @@ function showGraph() {
 		35 78 70 93 
 	*/
 
-	document.getElementById("nextBtn").disabled = false;
-	document.getElementById("showgraph").disabled = true;
-
-	main();
+	document.getElementById("runAlgorithm").disabled = false;
 
 	const s = (p) => {
 		let x = 100;
@@ -1252,7 +1253,6 @@ function showGraph() {
 
 			p.background(0);
 			p.fill(255);
-			// p.rect(x, y, 50, 50);
 			p.stroke(255);
 
 			drawLines(p);
