@@ -1277,7 +1277,7 @@ function showGraph() {
 			p.clear();
 			scaleFactor = 5 * scaleDownFactor;
 
-			p.background(0);
+			p.background(100);
 			p.fill(255);
 			p.stroke(255);
 
