@@ -128,6 +128,18 @@
 					>
 						Implementation
 					</button>
+					<button
+						class="nav-link"
+						id="nav-presentation-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#nav-presentation"
+						type="button"
+						role="tab"
+						aria-controls="nav-presentation"
+						aria-selected="true"
+					>
+						Presentation
+					</button>
 				</div>
 			</nav>
 
@@ -293,8 +305,6 @@
 							>
 						</li>
 					</ul>
-
-					
 				</div>
 				<div
 					class="tab-pane fade"
@@ -536,13 +546,29 @@
 					</div>
 				</div>
 				<div
+					class="tab-pane fade show"
+					id="nav-presentation"
+					role="tabpanel"
+					aria-labelledby="nav-presentation-tab"
+				>
+					<br />
+					<br />
+					<div class="embed-responsive embed-responsive-16by9">
+						<iframe
+							src="https://drive.google.com/file/d/1Y3XYrJelPsLHi0JJfswrr79WDoYOj8Wl/preview"
+							width="640"
+							height="480"
+							allow="autoplay"
+						></iframe>
+					</div>
+				</div>
+				<div
 					class="tab-pane fade show active"
 					id="nav-implementation"
 					role="tabpanel"
 					aria-labelledby="nav-implementation-tab"
 				>
 					<hr />
-
 
 					<div class="mb-3">
 						<label for="formFile" class="form-label"
@@ -636,7 +662,7 @@
 									</div>
 								</div> -->
 								<div class="row">
-									<br/>
+									<br />
 									<h5 id="algorithm_description"></h5>
 
 									<div id="plot_graph" style="padding: 20; margin: 20"></div>
@@ -667,6 +693,7 @@
 					</script>
 					<!-- <button id="calculate" onclick="main()">Find Intersections</button> -->
 				</div>
+				
 			</div>
 		</div>
 	</body>
