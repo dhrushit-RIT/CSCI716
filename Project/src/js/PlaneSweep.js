@@ -400,6 +400,26 @@ async function handle_end(event, sweep_line_status, event_queue) {
 	}
 }
 
+async function readFileFromPath(filePath) {
+	// const fileText = 
+	// afterFileLoads(fileText);
+
+	var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", filePath, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                afterFileLoads(allText);
+            }
+        }
+    }
+    rawFile.send(null);
+}
+
 async function handle_intersection(
 	event,
 	sweep_line_status,
